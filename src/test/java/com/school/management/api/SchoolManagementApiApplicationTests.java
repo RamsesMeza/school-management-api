@@ -1,4 +1,4 @@
-package com.school.management.api.school_management_api;
+package com.school.management.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
