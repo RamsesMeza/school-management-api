@@ -2,6 +2,7 @@ package com.school.management.api.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.school.management.api.dto.user.CreateUserRequest;
 import com.school.management.api.model.User;
 import com.school.management.api.service.UserService;
 
@@ -41,8 +42,8 @@ public class UserController {
   }
 
   @PostMapping()
-  public void postMethodName() {
-    userService.save();
+  public User postMethodName(@RequestBody CreateUserRequest request) {
+    return userService.create(request);
   }
 
   @PutMapping("path/{id}")

@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
-import com.school.management.api.model.Roles;
+import com.school.management.api.dto.user.CreateUserRequest;
 import com.school.management.api.model.User;
 import com.school.management.api.repository.UserRepository;
 
@@ -27,9 +27,13 @@ public class UserService {
         .orElseThrow(() -> new NoSuchElementException("Error"));
   }
 
-  public void save() {
-    userRepository.save(new User(null, "Ramses", "Meza",
-        "ram@gmail.com", "1234", true, Roles.ADMIN));
+  public User create(CreateUserRequest request) {
+
+    User user = new User(null, request.getName(), request.getLastName(),
+        request.getEmail(), request.getPassword(), true, request.getRole());
+
+    return userRepository.save(user);
+
   }
 
 }
