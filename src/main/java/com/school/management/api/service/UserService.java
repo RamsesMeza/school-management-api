@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 
 import com.school.management.api.dto.user.CreateUserRequest;
+import com.school.management.api.dto.user.UpdateUserRequest;
 import com.school.management.api.model.User;
 import com.school.management.api.repository.UserRepository;
 
@@ -28,12 +29,30 @@ public class UserService {
   }
 
   public User create(CreateUserRequest request) {
-
     User user = new User(null, request.getName(), request.getLastName(),
         request.getEmail(), request.getPassword(), true, request.getRole());
 
     return userRepository.save(user);
 
+  }
+
+  public User update(Long id, UpdateUserRequest request) {
+    User user = userRepository.findById(id)
+        .orElseThrow(() -> new NoSuchElementException("User not found"));
+
+    if (request.getName() != null) {
+      user.setName(request.getName());
+    }
+
+    if (request.getLastName() != null) {
+      user.setLastName(request.getLastName());
+    }
+
+    if (request.getRole() != null) {
+      user.setRoles(request.getRole());
+    }
+
+    return userRepository.save(user);
   }
 
 }

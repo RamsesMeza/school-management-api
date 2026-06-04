@@ -3,6 +3,7 @@ package com.school.management.api.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.school.management.api.dto.user.CreateUserRequest;
+import com.school.management.api.dto.user.UpdateUserRequest;
 import com.school.management.api.model.User;
 import com.school.management.api.service.UserService;
 
@@ -46,12 +47,11 @@ public class UserController {
     return userService.create(request);
   }
 
-  @PutMapping("path/{id}")
-  public String putMethodName(@PathVariable String id,
-      @RequestBody String entity) {
-    // TODO: process PUT request
+  @PutMapping("{id}")
+  public User putMethodName(@PathVariable Long id,
+      @RequestBody UpdateUserRequest request) {
 
-    return entity;
+    return userService.update(id, request);
   }
 
 }
