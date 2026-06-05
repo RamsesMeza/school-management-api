@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import com.school.management.api.dto.user.CreateUserRequest;
 import com.school.management.api.dto.user.PatchUserRequest;
 import com.school.management.api.dto.user.UpdateUserRequest;
+import com.school.management.api.exception.user.EmailDuplicatedException;
 import com.school.management.api.exception.user.UserNotFoundException;
-import com.school.management.api.model.Role;
 import com.school.management.api.model.User;
 import com.school.management.api.repository.UserRepository;
 
@@ -31,10 +31,15 @@ public class UserService {
   }
 
   public User create(CreateUserRequest request) {
-    Role role = Role.valueOf(request.getRole());
+
+    boolean emailExist = userRepository.existsByEmail(request.getEmail());
+
+    if (emailExist) {
+      throw new EmailDuplicatedException();
+    }
 
     User user = new User(null, request.getName(), request.getLastName(),
-        request.getEmail(), request.getPassword(), true, role);
+        request.getEmail(), request.getPassword(), true, request.getRole());
 
     return userRepository.save(user);
   }
@@ -43,11 +48,9 @@ public class UserService {
     User user = userRepository.findById(id)
         .orElseThrow(() -> new UserNotFoundException(id));
 
-    Role role = Role.valueOf(request.getRole());
-
     user.setName(request.getName());
     user.setLastName(request.getLastName());
-    user.setRole(role);
+    user.setRole(request.getRole());
 
     return userRepository.save(user);
   }
@@ -65,8 +68,7 @@ public class UserService {
     }
 
     if (request.getRole() != null) {
-      Role role = Role.valueOf(request.getRole());
-      user.setRole(role);
+      user.setRole(request.getRole());
     }
 
     return userRepository.save(user);

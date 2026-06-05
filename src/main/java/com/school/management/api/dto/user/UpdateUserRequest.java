@@ -1,9 +1,9 @@
 package com.school.management.api.dto.user;
 
-import com.school.management.api.annotations.ValidEnum;
 import com.school.management.api.model.Role;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +23,6 @@ public class UpdateUserRequest {
   @NotBlank(message = "Last name is required")
   private String lastName;
 
-  @NotBlank(message = "Roles is required")
-  @ValidEnum(enumClass = Role.class, message = "Role must be valid")
-  private String role;
+  @NotNull(message = "Role is required")
+  private Role role;
 }

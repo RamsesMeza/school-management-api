@@ -1,5 +1,6 @@
 package com.school.management.api.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +24,8 @@ public class User {
   private Long id;
   private String name;
   private String lastName;
+
+  @Column(nullable = false, unique = true)
   private String email;
   private String password;
   private boolean status;

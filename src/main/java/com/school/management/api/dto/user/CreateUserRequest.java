@@ -1,10 +1,10 @@
 package com.school.management.api.dto.user;
 
-import com.school.management.api.annotations.ValidEnum;
 import com.school.management.api.model.Role;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +33,6 @@ public class CreateUserRequest {
   @Size(min = 8, message = "Password must have at least 8 characters")
   private String password;
 
-  @NotBlank(message = "Role is required")
-  @ValidEnum(enumClass = Role.class, message = "Role must be valid")
-  private String role;
+  @NotNull(message = "Role is required")
+  private Role role;
 }
