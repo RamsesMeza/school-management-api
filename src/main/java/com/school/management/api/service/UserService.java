@@ -26,7 +26,7 @@ public class UserService {
 
   public User findById(Long id) {
     return userRepository.findById(id)
-        .orElseThrow(() -> new UserNotFoundException("User was not found"));
+        .orElseThrow(() -> new UserNotFoundException(id));
   }
 
   public User create(CreateUserRequest request) {
@@ -39,7 +39,7 @@ public class UserService {
 
   public User update(Long id, UpdateUserRequest request) {
     User user = userRepository.findById(id)
-        .orElseThrow(() -> new UserNotFoundException("User was not found"));
+        .orElseThrow(() -> new UserNotFoundException(id));
 
     user.setName(request.getName());
     user.setLastName(request.getLastName());
@@ -50,7 +50,7 @@ public class UserService {
 
   public User patch(Long id, PatchUserRequest request) {
     User user = userRepository.findById(id)
-        .orElseThrow(() -> new UserNotFoundException("User was not found"));
+        .orElseThrow(() -> new UserNotFoundException(id));
 
     if (request.getName() != null) {
       user.setName(request.getName());
@@ -69,7 +69,7 @@ public class UserService {
 
   public User delete(Long id) {
     User user = userRepository.findById(id)
-        .orElseThrow(() -> new UserNotFoundException("User was not found"));
+        .orElseThrow(() -> new UserNotFoundException(id));
 
     userRepository.delete(user);
 

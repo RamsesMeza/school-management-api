@@ -1,5 +1,7 @@
 package com.school.management.api.exception;
 
+import java.time.LocalDateTime;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,8 +16,9 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleResourceNotFound(
       UserNotFoundException e) {
 
-    ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(),
-        e.getMessage(), null);
+    ErrorResponse error = ErrorResponse.builder()
+        .status(HttpStatus.NOT_FOUND.value()).message(e.getMessage())
+        .timestamp(LocalDateTime.now()).build();
 
     return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
   }
