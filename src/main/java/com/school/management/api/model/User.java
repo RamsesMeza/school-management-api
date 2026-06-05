@@ -26,6 +26,6 @@ public class User {
   private String email;
   private String password;
   private boolean status;
-  private Roles roles;
+  private Role role;
 
 }

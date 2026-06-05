@@ -1,5 +1,5 @@
 package com.school.management.api.model;
 
-public enum Roles {
+public enum Role {
   STUDENT, PROFESSOR, ADMIN,
 }

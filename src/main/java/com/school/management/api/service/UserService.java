@@ -43,7 +43,7 @@ public class UserService {
 
     user.setName(request.getName());
     user.setLastName(request.getLastName());
-    user.setRoles(request.getRole());
+    user.setRole(request.getRole());
 
     return userRepository.save(user);
   }
@@ -61,7 +61,7 @@ public class UserService {
     }
 
     if (request.getRole() != null) {
-      user.setRoles(request.getRole());
+      user.setRole(request.getRole());
     }
 
     return userRepository.save(user);

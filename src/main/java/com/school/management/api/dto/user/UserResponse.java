@@ -2,7 +2,7 @@ package com.school.management.api.dto.user;
 
 import java.util.List;
 
-import com.school.management.api.model.Roles;
+import com.school.management.api.model.Role;
 import com.school.management.api.model.User;
 
 import lombok.AllArgsConstructor;
@@ -22,11 +22,11 @@ public class UserResponse {
   private String lastName;
   private String email;
   private boolean status;
-  private Roles role;
+  private Role role;
 
   public static UserResponse toUserResponse(User user) {
     return new UserResponse(user.getId(), user.getName(), user.getLastName(),
-        user.getEmail(), user.isStatus(), user.getRoles());
+        user.getEmail(), user.isStatus(), user.getRole());
   }
 
   public static List<UserResponse> toUserResponseList(List<User> users) {

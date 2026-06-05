@@ -1,6 +1,6 @@
 package com.school.management.api.dto.user;
 
-import com.school.management.api.model.Roles;
+import com.school.management.api.model.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,5 +16,5 @@ import lombok.Setter;
 public class UpdateUserRequest {
   private String name;
   private String lastName;
-  private Roles role;
+  private Role role;
 }

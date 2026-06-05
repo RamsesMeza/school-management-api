@@ -1,6 +1,6 @@
 package com.school.management.api.dto.user;
 
-import com.school.management.api.model.Roles;
+import com.school.management.api.model.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,5 +18,5 @@ public class CreateUserRequest {
   private String lastName;
   private String email;
   private String password;
-  private Roles role;
+  private Role role;
 }
