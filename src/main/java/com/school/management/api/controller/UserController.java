@@ -32,43 +32,43 @@ public class UserController {
 
   @GetMapping()
   public ResponseEntity<List<UserResponse>> getAllUsers() {
-    return ResponseEntity.status(200)
-        .body(UserResponse.toUserResponseList(userService.findAll()));
+    return ResponseEntity
+        .ok(UserResponse.toUserResponseList(userService.findAll()));
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
-    return ResponseEntity.status(200)
-        .body(UserResponse.toUserResponse(userService.findById(id)));
+    return ResponseEntity
+        .ok(UserResponse.toUserResponse(userService.findById(id)));
 
   }
 
   @PostMapping()
   public ResponseEntity<UserResponse> createUser(
       @RequestBody CreateUserRequest request) {
-    return ResponseEntity.status(204)
+    return ResponseEntity.status(201)
         .body(UserResponse.toUserResponse(userService.create(request)));
   }
 
   @PutMapping("/{id}")
   public ResponseEntity<UserResponse> updateUser(@PathVariable Long id,
       @RequestBody UpdateUserRequest request) {
-    return ResponseEntity.status(200)
-        .body(UserResponse.toUserResponse(userService.update(id, request)));
+    return ResponseEntity
+        .ok(UserResponse.toUserResponse(userService.update(id, request)));
   }
 
   @PatchMapping("/{id}")
   public ResponseEntity<UserResponse> patchUser(@PathVariable Long id,
       @RequestBody PatchUserRequest request) {
 
-    return ResponseEntity.status(200)
-        .body(UserResponse.toUserResponse(userService.patch(id, request)));
+    return ResponseEntity
+        .ok(UserResponse.toUserResponse(userService.patch(id, request)));
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<UserResponse> deleteUser(@PathVariable Long id) {
-    return ResponseEntity.status(200)
-        .body(UserResponse.toUserResponse(userService.delete(id)));
+    return ResponseEntity
+        .ok(UserResponse.toUserResponse(userService.delete(id)));
   }
 
 }
