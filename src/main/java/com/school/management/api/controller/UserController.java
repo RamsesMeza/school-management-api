@@ -3,14 +3,17 @@ package com.school.management.api.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.school.management.api.dto.user.CreateUserRequest;
+import com.school.management.api.dto.user.PatchUserRequest;
 import com.school.management.api.dto.user.UpdateUserRequest;
-import com.school.management.api.model.User;
+import com.school.management.api.dto.user.UserResponse;
 import com.school.management.api.service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,30 +31,44 @@ public class UserController {
   }
 
   @GetMapping()
-  public List<User> getMethodName() {
-    try {
-      return userService.findAll();
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return new ArrayList<>();
-    }
+  public ResponseEntity<List<UserResponse>> getAllUsers() {
+    return ResponseEntity.status(200)
+        .body(UserResponse.toUserResponseList(userService.findAll()));
   }
 
   @GetMapping("/{id}")
-  public User getUserById(@PathVariable Long id) {
-    return userService.findById(id);
+  public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+    return ResponseEntity.status(200)
+        .body(UserResponse.toUserResponse(userService.findById(id)));
+
   }
 
   @PostMapping()
-  public User postMethodName(@RequestBody CreateUserRequest request) {
-    return userService.create(request);
+  public ResponseEntity<UserResponse> createUser(
+      @RequestBody CreateUserRequest request) {
+    return ResponseEntity.status(204)
+        .body(UserResponse.toUserResponse(userService.create(request)));
   }
 
-  @PutMapping("{id}")
-  public User putMethodName(@PathVariable Long id,
+  @PutMapping("/{id}")
+  public ResponseEntity<UserResponse> updateUser(@PathVariable Long id,
       @RequestBody UpdateUserRequest request) {
+    return ResponseEntity.status(200)
+        .body(UserResponse.toUserResponse(userService.update(id, request)));
+  }
 
-    return userService.update(id, request);
+  @PatchMapping("/{id}")
+  public ResponseEntity<UserResponse> patchUser(@PathVariable Long id,
+      @RequestBody PatchUserRequest request) {
+
+    return ResponseEntity.status(200)
+        .body(UserResponse.toUserResponse(userService.patch(id, request)));
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<UserResponse> deleteUser(@PathVariable Long id) {
+    return ResponseEntity.status(200)
+        .body(UserResponse.toUserResponse(userService.delete(id)));
   }
 
 }

@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 
 import com.school.management.api.dto.user.CreateUserRequest;
+import com.school.management.api.dto.user.PatchUserRequest;
 import com.school.management.api.dto.user.UpdateUserRequest;
 import com.school.management.api.model.User;
 import com.school.management.api.repository.UserRepository;
@@ -40,6 +41,17 @@ public class UserService {
     User user = userRepository.findById(id)
         .orElseThrow(() -> new NoSuchElementException("User not found"));
 
+    user.setName(request.getName());
+    user.setLastName(request.getLastName());
+    user.setRoles(request.getRole());
+
+    return userRepository.save(user);
+  }
+
+  public User patch(Long id, PatchUserRequest request) {
+    User user = userRepository.findById(id)
+        .orElseThrow(() -> new NoSuchElementException("User not found"));
+
     if (request.getName() != null) {
       user.setName(request.getName());
     }
@@ -53,6 +65,15 @@ public class UserService {
     }
 
     return userRepository.save(user);
+  }
+
+  public User delete(Long id) {
+    User user = userRepository.findById(id)
+        .orElseThrow(() -> new NoSuchElementException("User not found"));
+
+    userRepository.delete(user);
+
+    return user;
   }
 
 }
