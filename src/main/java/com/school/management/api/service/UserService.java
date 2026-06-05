@@ -8,6 +8,7 @@ import com.school.management.api.dto.user.CreateUserRequest;
 import com.school.management.api.dto.user.PatchUserRequest;
 import com.school.management.api.dto.user.UpdateUserRequest;
 import com.school.management.api.exception.user.UserNotFoundException;
+import com.school.management.api.model.Role;
 import com.school.management.api.model.User;
 import com.school.management.api.repository.UserRepository;
 
@@ -30,20 +31,23 @@ public class UserService {
   }
 
   public User create(CreateUserRequest request) {
+    Role role = Role.valueOf(request.getRole());
+
     User user = new User(null, request.getName(), request.getLastName(),
-        request.getEmail(), request.getPassword(), true, request.getRole());
+        request.getEmail(), request.getPassword(), true, role);
 
     return userRepository.save(user);
-
   }
 
   public User update(Long id, UpdateUserRequest request) {
     User user = userRepository.findById(id)
         .orElseThrow(() -> new UserNotFoundException(id));
 
+    Role role = Role.valueOf(request.getRole());
+
     user.setName(request.getName());
     user.setLastName(request.getLastName());
-    user.setRole(request.getRole());
+    user.setRole(role);
 
     return userRepository.save(user);
   }
@@ -61,7 +65,8 @@ public class UserService {
     }
 
     if (request.getRole() != null) {
-      user.setRole(request.getRole());
+      Role role = Role.valueOf(request.getRole());
+      user.setRole(role);
     }
 
     return userRepository.save(user);

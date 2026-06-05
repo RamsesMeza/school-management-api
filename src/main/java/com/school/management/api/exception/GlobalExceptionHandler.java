@@ -1,9 +1,14 @@
 package com.school.management.api.exception;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -25,6 +30,36 @@ public class GlobalExceptionHandler {
         .timestamp(LocalDateTime.now()).build();
 
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<ErrorResponse> handleInvalidJson(
+      HttpMessageNotReadableException exception, HttpServletRequest request) {
+
+    ErrorResponse error = ErrorResponse.builder()
+        .status(HttpStatus.BAD_REQUEST.value()).error("Invalid JSON format")
+        .message("Check that each field has the correct type")
+        .path(request.getRequestURI()).timestamp(LocalDateTime.now()).build();
+
+    return ResponseEntity.badRequest().body(error);
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ErrorResponse> handleValidationErrors(
+      MethodArgumentNotValidException exception, HttpServletRequest request) {
+    Map<String, String> errors = new HashMap<>();
+
+    exception.getBindingResult().getFieldErrors().forEach(
+        error -> errors.put(error.getField(), error.getDefaultMessage()));
+
+    String message = errors.values().stream().collect(Collectors.joining(", "));
+
+    ErrorResponse error = ErrorResponse.builder()
+        .status(HttpStatus.BAD_REQUEST.value()).error("Invalid JSON format")
+        .message(message).path(request.getRequestURI())
+        .timestamp(LocalDateTime.now()).build();
+
+    return ResponseEntity.badRequest().body(error);
   }
 
 }

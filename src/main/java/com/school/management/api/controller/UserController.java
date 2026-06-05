@@ -8,6 +8,8 @@ import com.school.management.api.dto.user.UpdateUserRequest;
 import com.school.management.api.dto.user.UserResponse;
 import com.school.management.api.service.UserService;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -46,21 +48,21 @@ public class UserController {
 
   @PostMapping()
   public ResponseEntity<UserResponse> createUser(
-      @RequestBody CreateUserRequest request) {
+      @Valid @RequestBody CreateUserRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(UserResponse.toUserResponse(userService.create(request)));
   }
 
   @PutMapping("/{id}")
   public ResponseEntity<UserResponse> updateUser(@PathVariable Long id,
-      @RequestBody UpdateUserRequest request) {
+      @Valid @RequestBody UpdateUserRequest request) {
     return ResponseEntity
         .ok(UserResponse.toUserResponse(userService.update(id, request)));
   }
 
   @PatchMapping("/{id}")
   public ResponseEntity<UserResponse> patchUser(@PathVariable Long id,
-      @RequestBody PatchUserRequest request) {
+      @Valid @RequestBody PatchUserRequest request) {
 
     return ResponseEntity
         .ok(UserResponse.toUserResponse(userService.patch(id, request)));

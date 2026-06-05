@@ -1,5 +1,6 @@
 package com.school.management.api.dto.user;
 
+import com.school.management.api.annotations.ValidEnum;
 import com.school.management.api.model.Role;
 
 import lombok.AllArgsConstructor;
@@ -16,5 +17,7 @@ import lombok.Setter;
 public class PatchUserRequest {
   private String name;
   private String lastName;
-  private Role role;
+
+  @ValidEnum(enumClass = Role.class, message = "Role must be valid")
+  private String role;
 }
