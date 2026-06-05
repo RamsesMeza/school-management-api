@@ -38,8 +38,9 @@ public class UserService {
       throw new EmailDuplicatedException(request.getEmail());
     }
 
-    User user = new User(null, request.getName(), request.getLastName(),
-        request.getEmail(), request.getPassword(), true, request.getRole());
+    User user = new User(null, request.getName().toLowerCase(),
+        request.getLastName().toLowerCase(), request.getEmail().toLowerCase(),
+        request.getPassword(), true, request.getRole());
 
     return userRepository.save(user);
   }
