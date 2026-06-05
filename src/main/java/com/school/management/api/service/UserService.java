@@ -35,7 +35,7 @@ public class UserService {
     boolean emailExist = userRepository.existsByEmail(request.getEmail());
 
     if (emailExist) {
-      throw new EmailDuplicatedException();
+      throw new EmailDuplicatedException(request.getEmail());
     }
 
     User user = new User(null, request.getName(), request.getLastName(),

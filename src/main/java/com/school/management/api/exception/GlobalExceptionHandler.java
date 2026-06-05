@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -69,7 +68,7 @@ public class GlobalExceptionHandler {
       EmailDuplicatedException exception, HttpServletRequest request) {
 
     ErrorResponse error = ErrorResponse.builder()
-        .status(HttpStatus.BAD_REQUEST.value())
+        .status(HttpStatus.CONFLICT.value())
         .error(HttpStatus.CONFLICT.getReasonPhrase())
         .message(exception.getMessage()).path(request.getRequestURI())
         .timestamp(LocalDateTime.now()).build();
