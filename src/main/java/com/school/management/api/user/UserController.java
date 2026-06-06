@@ -1,76 +1,62 @@
 package com.school.management.api.user;
 
-import org.springframework.web.bind.annotation.RestController;
-
 import com.school.management.api.user.dto.CreateUserRequest;
 import com.school.management.api.user.dto.PatchUserRequest;
 import com.school.management.api.user.dto.UpdateUserRequest;
 import com.school.management.api.user.dto.UserResponse;
-
 import jakarta.validation.Valid;
-
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-  private final UserService userService;
+    private final UserService userService;
 
-  public UserController(UserService userService) {
-    this.userService = userService;
-  }
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
-  @GetMapping()
-  public ResponseEntity<List<UserResponse>> getAllUsers() {
-    return ResponseEntity
-        .ok(UserResponse.toUserResponseList(userService.findAll()));
-  }
+    @GetMapping()
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        return ResponseEntity.ok(UserResponse.toUserResponseList(userService.findAll()));
+    }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
-    return ResponseEntity
-        .ok(UserResponse.toUserResponse(userService.findById(id)));
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(UserResponse.toUserResponse(userService.findById(id)));
+    }
 
-  }
+    @PostMapping()
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(UserResponse.toUserResponse(userService.create(request)));
+    }
 
-  @PostMapping()
-  public ResponseEntity<UserResponse> createUser(
-      @Valid @RequestBody CreateUserRequest request) {
-    return ResponseEntity.status(HttpStatus.CREATED)
-        .body(UserResponse.toUserResponse(userService.create(request)));
-  }
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> updateUser(
+            @PathVariable Long id, @Valid @RequestBody UpdateUserRequest request) {
+        return ResponseEntity.ok(UserResponse.toUserResponse(userService.update(id, request)));
+    }
 
-  @PutMapping("/{id}")
-  public ResponseEntity<UserResponse> updateUser(@PathVariable Long id,
-      @Valid @RequestBody UpdateUserRequest request) {
-    return ResponseEntity
-        .ok(UserResponse.toUserResponse(userService.update(id, request)));
-  }
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserResponse> patchUser(@PathVariable Long id, @Valid @RequestBody PatchUserRequest request) {
 
-  @PatchMapping("/{id}")
-  public ResponseEntity<UserResponse> patchUser(@PathVariable Long id,
-      @Valid @RequestBody PatchUserRequest request) {
+        return ResponseEntity.ok(UserResponse.toUserResponse(userService.patch(id, request)));
+    }
 
-    return ResponseEntity
-        .ok(UserResponse.toUserResponse(userService.patch(id, request)));
-  }
-
-  @DeleteMapping("/{id}")
-  public ResponseEntity<UserResponse> deleteUser(@PathVariable Long id) {
-    return ResponseEntity
-        .ok(UserResponse.toUserResponse(userService.delete(id)));
-  }
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<UserResponse> deleteUser(@PathVariable Long id) {
+        return ResponseEntity.ok(UserResponse.toUserResponse(userService.delete(id)));
+    }
 }

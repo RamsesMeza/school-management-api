@@ -1,7 +1,6 @@
 package com.school.management.api.user.dto;
 
 import com.school.management.api.user.Role;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,20 +18,13 @@ import lombok.Setter;
 @Builder
 public class CreateUserRequest {
 
-  @NotBlank(message = "First name is required")
-  private String name;
+    @NotBlank(message = "First name is required") private String name;
 
-  @NotBlank(message = "Last name is required")
-  private String lastName;
+    @NotBlank(message = "Last name is required") private String lastName;
 
-  @NotBlank(message = "Email is required")
-  @Email(message = "Email must be valid")
-  private String email;
+    @NotBlank(message = "Email is required") @Email(message = "Email must be valid") private String email;
 
-  @NotBlank(message = "Password is required")
-  @Size(min = 8, message = "Password must have at least 8 characters")
-  private String password;
+    @NotBlank(message = "Password is required") @Size(min = 8, message = "Password must have at least 8 characters") private String password;
 
-  @NotNull(message = "Role is required")
-  private Role role;
+    @NotNull(message = "Role is required") private Role role;
 }

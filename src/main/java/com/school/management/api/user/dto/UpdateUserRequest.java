@@ -1,7 +1,6 @@
 package com.school.management.api.user.dto;
 
 import com.school.management.api.user.Role;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,12 +16,9 @@ import lombok.Setter;
 @Builder
 public class UpdateUserRequest {
 
-  @NotBlank(message = "Name is required")
-  private String name;
+    @NotBlank(message = "Name is required") private String name;
 
-  @NotBlank(message = "Last name is required")
-  private String lastName;
+    @NotBlank(message = "Last name is required") private String lastName;
 
-  @NotNull(message = "Role is required")
-  private Role role;
+    @NotNull(message = "Role is required") private Role role;
 }
