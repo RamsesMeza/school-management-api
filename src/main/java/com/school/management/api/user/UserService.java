@@ -44,6 +44,7 @@ public class UserService {
                 .email(request.getEmail())
                 .password(encodedPassword)
                 .role(request.getRole())
+                .status(false)
                 .build();
 
         return userRepository.save(user);

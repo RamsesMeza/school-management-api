@@ -1,5 +1,6 @@
 package com.school.management.api.shared.exception;
 
+import com.school.management.api.auth.exception.BadCredentialsException;
 import com.school.management.api.user.exception.EmailDuplicatedException;
 import com.school.management.api.user.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -71,7 +72,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EmailDuplicatedException.class)
-    public ResponseEntity<ErrorResponse> emailDuplicatedException(
+    public ResponseEntity<ErrorResponse> handleEmailDuplicatedException(
             EmailDuplicatedException exception, HttpServletRequest request) {
 
         ErrorResponse error = ErrorResponse.builder()
@@ -82,6 +83,21 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        return ResponseEntity.status(HttpStatus.CONFLICT.value()).body(error);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(
+            BadCredentialsException exception, HttpServletRequest request) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                .message(exception.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 }
