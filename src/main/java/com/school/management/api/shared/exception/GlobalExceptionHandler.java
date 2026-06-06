@@ -1,4 +1,4 @@
-package com.school.management.api.exception;
+package com.school.management.api.shared.exception;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.school.management.api.exception.user.EmailDuplicatedException;
-import com.school.management.api.exception.user.UserNotFoundException;
+import com.school.management.api.user.exception.EmailDuplicatedException;
+import com.school.management.api.user.exception.UserNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
 

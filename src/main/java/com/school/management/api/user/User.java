@@ -1,4 +1,4 @@
-package com.school.management.api.model;
+package com.school.management.api.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

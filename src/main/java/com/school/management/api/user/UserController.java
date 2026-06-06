@@ -1,12 +1,11 @@
-package com.school.management.api.controller;
+package com.school.management.api.user;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.school.management.api.dto.user.CreateUserRequest;
-import com.school.management.api.dto.user.PatchUserRequest;
-import com.school.management.api.dto.user.UpdateUserRequest;
-import com.school.management.api.dto.user.UserResponse;
-import com.school.management.api.service.UserService;
+import com.school.management.api.user.dto.CreateUserRequest;
+import com.school.management.api.user.dto.PatchUserRequest;
+import com.school.management.api.user.dto.UpdateUserRequest;
+import com.school.management.api.user.dto.UserResponse;
 
 import jakarta.validation.Valid;
 

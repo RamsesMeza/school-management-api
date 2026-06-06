@@ -1,9 +1,9 @@
-package com.school.management.api.dto.user;
+package com.school.management.api.user.dto;
 
 import java.util.List;
 
-import com.school.management.api.model.Role;
-import com.school.management.api.model.User;
+import com.school.management.api.user.Role;
+import com.school.management.api.user.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

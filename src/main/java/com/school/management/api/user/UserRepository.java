@@ -1,9 +1,7 @@
-package com.school.management.api.repository;
+package com.school.management.api.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import com.school.management.api.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

@@ -1,6 +1,6 @@
-package com.school.management.api.dto.user;
+package com.school.management.api.user.dto;
 
-import com.school.management.api.model.Role;
+import com.school.management.api.user.Role;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

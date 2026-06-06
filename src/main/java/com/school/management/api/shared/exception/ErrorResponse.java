@@ -1,4 +1,4 @@
-package com.school.management.api.exception;
+package com.school.management.api.shared.exception;
 
 import java.time.LocalDateTime;
 

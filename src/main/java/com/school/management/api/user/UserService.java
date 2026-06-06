@@ -1,16 +1,14 @@
-package com.school.management.api.service;
+package com.school.management.api.user;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.school.management.api.dto.user.CreateUserRequest;
-import com.school.management.api.dto.user.PatchUserRequest;
-import com.school.management.api.dto.user.UpdateUserRequest;
-import com.school.management.api.exception.user.EmailDuplicatedException;
-import com.school.management.api.exception.user.UserNotFoundException;
-import com.school.management.api.model.User;
-import com.school.management.api.repository.UserRepository;
+import com.school.management.api.user.dto.CreateUserRequest;
+import com.school.management.api.user.dto.PatchUserRequest;
+import com.school.management.api.user.dto.UpdateUserRequest;
+import com.school.management.api.user.exception.EmailDuplicatedException;
+import com.school.management.api.user.exception.UserNotFoundException;
 
 @Service
 public class UserService {
