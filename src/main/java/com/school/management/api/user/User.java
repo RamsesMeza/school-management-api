@@ -44,4 +44,8 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public boolean isActive() {
+        return this.status;
+    }
 }
