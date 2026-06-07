@@ -4,6 +4,7 @@ import com.school.management.api.auth.dto.AuthResponse;
 import com.school.management.api.auth.dto.LoginRequest;
 import com.school.management.api.auth.dto.RegisterRequest;
 import com.school.management.api.auth.exception.BadCredentialsException;
+import com.school.management.api.security.JwtService;
 import com.school.management.api.user.Role;
 import com.school.management.api.user.User;
 import com.school.management.api.user.UserRepository;
@@ -17,10 +18,12 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -38,9 +41,10 @@ public class AuthService {
             throw new BadCredentialsException();
         }
 
+        String token = jwtService.generateToken(user);
         UserResponse userResponse = UserResponse.toUserResponse(user);
 
-        return AuthResponse.builder().token(null).user(userResponse).build();
+        return AuthResponse.builder().token(token).user(userResponse).build();
     }
 
     public User registerUser(RegisterRequest request) {
