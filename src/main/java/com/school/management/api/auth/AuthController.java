@@ -3,7 +3,6 @@ package com.school.management.api.auth;
 import com.school.management.api.auth.dto.AuthResponse;
 import com.school.management.api.auth.dto.LoginRequest;
 import com.school.management.api.auth.dto.RegisterRequest;
-import com.school.management.api.user.UserService;
 import com.school.management.api.user.dto.UserResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,22 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
-    private final UserService userService;
 
-    public AuthController(AuthService authService, UserService userService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.userService = userService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
-
-        authService.login(request);
-        return ResponseEntity.ok(AuthResponse.builder().token("").build());
+        return ResponseEntity.ok(authService.login(request));
     }
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(UserResponse.toUserResponse(userService.create(request)));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(UserResponse.toUserResponse(authService.registerUser(request)));
     }
 }
