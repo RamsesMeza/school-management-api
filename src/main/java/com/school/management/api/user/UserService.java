@@ -3,6 +3,7 @@ package com.school.management.api.user;
 import com.school.management.api.user.dto.CreateUserRequest;
 import com.school.management.api.user.dto.PatchUserRequest;
 import com.school.management.api.user.dto.UpdateUserRequest;
+import com.school.management.api.user.dto.UserResponse;
 import com.school.management.api.user.exception.EmailDuplicatedException;
 import com.school.management.api.user.exception.UserNotFoundException;
 import java.util.List;
@@ -12,23 +13,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
+    private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserResponse> findAll() {
+        return userMapper.toUserResponseList(userRepository.findAll());
     }
 
-    public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    public UserResponse findById(Long id) {
+        return userMapper.toUserResponse(userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id)));
     }
 
-    public User create(CreateUserRequest request) {
+    public UserResponse create(CreateUserRequest request) {
 
         String email = request.getEmail().trim().toLowerCase();
 
@@ -49,20 +52,20 @@ public class UserService {
                 .status(false)
                 .build();
 
-        return userRepository.save(user);
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    public User update(Long id, UpdateUserRequest request) {
+    public UserResponse update(Long id, UpdateUserRequest request) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 
         user.setName(request.getName());
         user.setLastName(request.getLastName());
         user.setRole(request.getRole());
 
-        return userRepository.save(user);
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    public User patch(Long id, PatchUserRequest request) {
+    public UserResponse patch(Long id, PatchUserRequest request) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 
         if (request.getName() != null) {
@@ -77,14 +80,14 @@ public class UserService {
             user.setRole(request.getRole());
         }
 
-        return userRepository.save(user);
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    public User delete(Long id) {
+    public UserResponse delete(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 
         userRepository.delete(user);
 
-        return user;
+        return userMapper.toUserResponse(user);
     }
 }

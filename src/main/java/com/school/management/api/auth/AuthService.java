@@ -7,6 +7,7 @@ import com.school.management.api.auth.exception.BadCredentialsException;
 import com.school.management.api.security.JwtService;
 import com.school.management.api.user.Role;
 import com.school.management.api.user.User;
+import com.school.management.api.user.UserMapper;
 import com.school.management.api.user.UserRepository;
 import com.school.management.api.user.dto.UserResponse;
 import com.school.management.api.user.exception.EmailDuplicatedException;
@@ -19,11 +20,17 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final UserMapper userMapper;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public AuthService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService,
+            UserMapper userMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.userMapper = userMapper;
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -42,12 +49,12 @@ public class AuthService {
         }
 
         String token = jwtService.generateToken(user);
-        UserResponse userResponse = UserResponse.toUserResponse(user);
+        UserResponse userResponse = userMapper.toUserResponse(user);
 
         return AuthResponse.builder().token(token).user(userResponse).build();
     }
 
-    public User registerUser(RegisterRequest request) {
+    public UserResponse registerUser(RegisterRequest request) {
 
         String email = request.getEmail().trim().toLowerCase();
         boolean emailExist = userRepository.existsByEmail(email);
@@ -67,6 +74,6 @@ public class AuthService {
                 .status(false)
                 .build();
 
-        return userRepository.save(user);
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 }

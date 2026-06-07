@@ -1,8 +1,6 @@
 package com.school.management.api.user.dto;
 
 import com.school.management.api.user.Role;
-import com.school.management.api.user.User;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,13 +19,4 @@ public class UserResponse {
     private String email;
     private boolean status;
     private Role role;
-
-    public static UserResponse toUserResponse(User user) {
-        return new UserResponse(
-                user.getId(), user.getName(), user.getLastName(), user.getEmail(), user.isStatus(), user.getRole());
-    }
-
-    public static List<UserResponse> toUserResponseList(List<User> users) {
-        return users.stream().map(u -> toUserResponse(u)).toList();
-    }
 }
