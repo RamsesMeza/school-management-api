@@ -30,10 +30,12 @@ public class UserService {
 
     public User create(CreateUserRequest request) {
 
-        boolean emailExist = userRepository.existsByEmail(request.getEmail());
+        String email = request.getEmail().trim().toLowerCase();
+
+        boolean emailExist = userRepository.existsByEmail(email);
 
         if (emailExist) {
-            throw new EmailDuplicatedException(request.getEmail());
+            throw new EmailDuplicatedException(email);
         }
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
@@ -41,7 +43,7 @@ public class UserService {
         User user = User.builder()
                 .name(request.getName())
                 .lastName(request.getLastName())
-                .email(request.getEmail())
+                .email(email)
                 .password(encodedPassword)
                 .role(request.getRole())
                 .status(false)

@@ -25,7 +25,9 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
 
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new BadCredentialsException());
+        String email = request.getEmail().trim().toLowerCase();
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new BadCredentialsException());
 
         boolean passwordMatches = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
@@ -40,10 +42,12 @@ public class AuthService {
 
     public User registerUser(RegisterRequest request) {
 
-        boolean emailExist = userRepository.existsByEmail(request.getEmail());
+        String email = request.getEmail().trim().toLowerCase();
+
+        boolean emailExist = userRepository.existsByEmail(email);
 
         if (emailExist) {
-            throw new EmailDuplicatedException(request.getEmail());
+            throw new EmailDuplicatedException(email);
         }
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
@@ -51,7 +55,7 @@ public class AuthService {
         User user = User.builder()
                 .name(request.getName())
                 .lastName(request.getLastName())
-                .email(request.getEmail())
+                .email(email)
                 .password(encodedPassword)
                 .role(Role.STUDENT)
                 .status(false)
