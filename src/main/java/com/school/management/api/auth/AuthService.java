@@ -11,6 +11,8 @@ import com.school.management.api.user.UserMapper;
 import com.school.management.api.user.UserRepository;
 import com.school.management.api.user.dto.UserResponse;
 import com.school.management.api.user.exception.EmailDuplicatedException;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -65,12 +67,15 @@ public class AuthService {
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.ADMIN);
+
         User user = User.builder()
                 .name(request.getName())
                 .lastName(request.getLastName())
                 .email(email)
                 .password(encodedPassword)
-                .role(Role.STUDENT)
+                .roles(roles)
                 .status(false)
                 .build();
 

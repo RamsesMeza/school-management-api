@@ -48,7 +48,7 @@ public class UserService {
                 .lastName(request.getLastName())
                 .email(email)
                 .password(encodedPassword)
-                .role(request.getRole())
+                .roles(request.getRoles())
                 .status(false)
                 .build();
 
@@ -60,7 +60,7 @@ public class UserService {
 
         user.setName(request.getName());
         user.setLastName(request.getLastName());
-        user.setRole(request.getRole());
+        user.setRoles(request.getRoles());
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
@@ -74,10 +74,6 @@ public class UserService {
 
         if (request.getLastName() != null) {
             user.setLastName(request.getLastName());
-        }
-
-        if (request.getRole() != null) {
-            user.setRole(request.getRole());
         }
 
         return userMapper.toUserResponse(userRepository.save(user));
