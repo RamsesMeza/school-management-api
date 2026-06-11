@@ -6,7 +6,11 @@ import com.school.management.api.user.dto.UpdateUserRequest;
 import com.school.management.api.user.dto.UserResponse;
 import com.school.management.api.user.exception.EmailDuplicatedException;
 import com.school.management.api.user.exception.UserNotFoundException;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +20,14 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserCreationService userCreationService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
+    public UserService(UserMapper userMapper, UserRepository userRepository, PasswordEncoder passwordEncoder,
+            UserCreationService userCreationService) {
+        this.userMapper = userMapper;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.userMapper = userMapper;
+        this.userCreationService = userCreationService;
     }
 
     public List<UserResponse> findAll() {
@@ -33,26 +40,7 @@ public class UserService {
 
     public UserResponse create(CreateUserRequest request) {
 
-        String email = request.getEmail().trim().toLowerCase();
-
-        boolean emailExist = userRepository.existsByEmail(email);
-
-        if (emailExist) {
-            throw new EmailDuplicatedException(email);
-        }
-
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
-
-        User user = User.builder()
-                .name(request.getName())
-                .lastName(request.getLastName())
-                .email(email)
-                .password(encodedPassword)
-                .roles(request.getRoles())
-                .status(false)
-                .build();
-
-        return userMapper.toUserResponse(userRepository.save(user));
+        return userCreationService.createUser(request, request.getRoles());
     }
 
     public UserResponse update(Long id, UpdateUserRequest request) {

@@ -7,6 +7,7 @@ import com.school.management.api.auth.exception.BadCredentialsException;
 import com.school.management.api.security.JwtService;
 import com.school.management.api.user.Role;
 import com.school.management.api.user.User;
+import com.school.management.api.user.UserCreationService;
 import com.school.management.api.user.UserMapper;
 import com.school.management.api.user.UserRepository;
 import com.school.management.api.user.dto.UserResponse;
@@ -23,16 +24,15 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final UserMapper userMapper;
+    private final UserCreationService userCreationService;
 
-    public AuthService(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            JwtService jwtService,
-            UserMapper userMapper) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService,
+            UserMapper userMapper, UserCreationService userCreationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.userMapper = userMapper;
+        this.userCreationService = userCreationService;
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -58,27 +58,9 @@ public class AuthService {
 
     public UserResponse registerUser(RegisterRequest request) {
 
-        String email = request.getEmail().trim().toLowerCase();
-        boolean emailExist = userRepository.existsByEmail(email);
-
-        if (emailExist) {
-            throw new EmailDuplicatedException(email);
-        }
-
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
-
         Set<Role> roles = new HashSet<>();
-        roles.add(Role.ADMIN);
 
-        User user = User.builder()
-                .name(request.getName())
-                .lastName(request.getLastName())
-                .email(email)
-                .password(encodedPassword)
-                .roles(roles)
-                .status(false)
-                .build();
-
-        return userMapper.toUserResponse(userRepository.save(user));
+        roles.add(Role.STUDENT);
+        return userCreationService.createUser(request, roles);
     }
 }
