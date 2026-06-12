@@ -17,7 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateUserRequest {
+public class CreateUserRequest implements UserCreationRequest {
 
     @NotBlank(message = "Name is required") private String name;
 

@@ -4,14 +4,8 @@ import com.school.management.api.user.dto.CreateUserRequest;
 import com.school.management.api.user.dto.PatchUserRequest;
 import com.school.management.api.user.dto.UpdateUserRequest;
 import com.school.management.api.user.dto.UserResponse;
-import com.school.management.api.user.exception.EmailDuplicatedException;
 import com.school.management.api.user.exception.UserNotFoundException;
-
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,14 +13,11 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final UserCreationService userCreationService;
 
-    public UserService(UserMapper userMapper, UserRepository userRepository, PasswordEncoder passwordEncoder,
-            UserCreationService userCreationService) {
+    public UserService(UserMapper userMapper, UserRepository userRepository, UserCreationService userCreationService) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
         this.userCreationService = userCreationService;
     }
 

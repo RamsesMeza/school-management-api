@@ -11,8 +11,6 @@ import com.school.management.api.user.UserCreationService;
 import com.school.management.api.user.UserMapper;
 import com.school.management.api.user.UserRepository;
 import com.school.management.api.user.dto.UserResponse;
-import com.school.management.api.user.exception.EmailDuplicatedException;
-import java.util.HashSet;
 import java.util.Set;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,8 +24,12 @@ public class AuthService {
     private final UserMapper userMapper;
     private final UserCreationService userCreationService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService,
-            UserMapper userMapper, UserCreationService userCreationService) {
+    public AuthService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService,
+            UserMapper userMapper,
+            UserCreationService userCreationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
@@ -58,9 +60,6 @@ public class AuthService {
 
     public UserResponse registerUser(RegisterRequest request) {
 
-        Set<Role> roles = new HashSet<>();
-
-        roles.add(Role.STUDENT);
-        return userCreationService.createUser(request, roles);
+        return userCreationService.createUser(request, Set.of(Role.STUDENT));
     }
 }

@@ -17,44 +17,44 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  private final JwtService jwtService;
-  private final UserRepository userRepository;
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
 
-  public JwtAuthenticationFilter(JwtService jwtService, UserRepository userRepository) {
-    this.jwtService = jwtService;
-    this.userRepository = userRepository;
-  }
-
-  @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-      throws ServletException, IOException {
-
-    String authHeader = request.getHeader("Authorization");
-
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      filterChain.doFilter(request, response);
-      return;
+    public JwtAuthenticationFilter(JwtService jwtService, UserRepository userRepository) {
+        this.jwtService = jwtService;
+        this.userRepository = userRepository;
     }
 
-    String token = authHeader.substring(7);
-    String email = jwtService.extractUsername(token);
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
-    if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-      User user = userRepository.findByEmail(email).orElse(null);
+        String authHeader = request.getHeader("Authorization");
 
-      if (user != null && jwtService.isTokenValid(token, user) && user.isActive()) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-        List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
-            .map(r -> new SimpleGrantedAuthority("ROLE_" + r.name()))
-            .toList();
+        String token = authHeader.substring(7);
+        String email = jwtService.extractUsername(token);
 
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user.getEmail(),
-            null, authorities);
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            User user = userRepository.findByEmail(email).orElse(null);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-      }
+            if (user != null && jwtService.isTokenValid(token, user) && user.isActive()) {
+
+                List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
+                        .map(r -> new SimpleGrantedAuthority("ROLE_" + r.name()))
+                        .toList();
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(user.getEmail(), null, authorities);
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }
+
+        filterChain.doFilter(request, response);
     }
-
-    filterChain.doFilter(request, response);
-  }
 }
