@@ -1,6 +1,8 @@
-package com.school.management.api.auth.model;
+package com.school.management.api.auth.entity;
 
 import com.school.management.api.user.User;
+
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,6 +19,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 @Table(name = "activation_tokens")
 public class ActivationToken {
 
