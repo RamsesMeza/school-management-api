@@ -34,7 +34,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToMany(mappedBy = "userId")
-    private ActivationToken activationToken;
+    private Set<ActivationToken> activationTokens;
 
     @Column(nullable = false)
     private String name;
