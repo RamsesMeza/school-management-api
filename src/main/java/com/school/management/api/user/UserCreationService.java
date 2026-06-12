@@ -20,7 +20,11 @@ public class UserCreationService {
         this.userMapper = userMapper;
     }
 
-    public UserResponse createUser(UserCreationRequest request, Set<Role> roles) {
+    public boolean userExistByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public UserResponse createUser(UserCreationRequest request, Set<Role> roles, boolean status) {
 
         String email = request.getEmail().trim().toLowerCase();
 
@@ -38,7 +42,7 @@ public class UserCreationService {
                 .email(email)
                 .password(encodedPassword)
                 .roles(roles)
-                .status(false)
+                .status(status)
                 .build();
 
         return userMapper.toUserResponse(userRepository.save(user));

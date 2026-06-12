@@ -60,6 +60,6 @@ public class AuthService {
 
     public UserResponse registerUser(RegisterRequest request) {
 
-        return userCreationService.createUser(request, Set.of(Role.STUDENT));
+        return userCreationService.createUser(request, Set.of(Role.STUDENT), false);
     }
 }

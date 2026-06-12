@@ -30,8 +30,7 @@ public class UserService {
     }
 
     public UserResponse create(CreateUserRequest request) {
-
-        return userCreationService.createUser(request, request.getRoles());
+        return userCreationService.createUser(request, request.getRoles(), false);
     }
 
     public UserResponse update(Long id, UpdateUserRequest request) {
