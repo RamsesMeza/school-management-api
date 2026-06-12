@@ -1,9 +1,8 @@
 package com.school.management.api.auth.email.verification;
 
-import org.springframework.stereotype.Service;
-
 import com.school.management.api.shared.security.SecureTokenGenerator;
 import com.school.management.api.shared.security.TokenHasher;
+import org.springframework.stereotype.Service;
 
 @Service
 public class EmailVerificationTokenService {
@@ -11,9 +10,7 @@ public class EmailVerificationTokenService {
     private final SecureTokenGenerator secureTokenGenerator;
     private final TokenHasher tokenHasher;
 
-    public EmailVerificationTokenService(
-            SecureTokenGenerator secureTokenGenerator,
-            TokenHasher tokenHasher) {
+    public EmailVerificationTokenService(SecureTokenGenerator secureTokenGenerator, TokenHasher tokenHasher) {
         this.secureTokenGenerator = secureTokenGenerator;
         this.tokenHasher = tokenHasher;
     }

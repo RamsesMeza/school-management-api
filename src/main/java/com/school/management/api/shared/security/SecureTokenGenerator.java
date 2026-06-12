@@ -2,7 +2,6 @@ package com.school.management.api.shared.security;
 
 import java.security.SecureRandom;
 import java.util.Base64;
-
 import org.springframework.stereotype.Component;
 
 @Component
