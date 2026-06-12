@@ -3,6 +3,7 @@ package com.school.management.api.auth;
 import com.school.management.api.auth.dto.AuthResponse;
 import com.school.management.api.auth.dto.LoginRequest;
 import com.school.management.api.auth.dto.RegisterRequest;
+import com.school.management.api.auth.email.verification.EmailVerificationTokenService;
 import com.school.management.api.auth.exception.BadCredentialsException;
 import com.school.management.api.security.JwtService;
 import com.school.management.api.user.Role;
@@ -23,18 +24,21 @@ public class AuthService {
     private final JwtService jwtService;
     private final UserMapper userMapper;
     private final UserCreationService userCreationService;
+    private final EmailVerificationTokenService emailVerificationTokenService;
 
     public AuthService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             JwtService jwtService,
             UserMapper userMapper,
-            UserCreationService userCreationService) {
+            UserCreationService userCreationService,
+            EmailVerificationTokenService emailVerificationTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.userMapper = userMapper;
         this.userCreationService = userCreationService;
+        this.emailVerificationTokenService = emailVerificationTokenService;
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -60,6 +64,13 @@ public class AuthService {
 
     public UserResponse registerUser(RegisterRequest request) {
 
-        return userCreationService.createUser(request, Set.of(Role.STUDENT), false);
+        UserResponse userResponse = userCreationService.createUser(request, Set.of(Role.STUDENT), false);
+
+        String token = emailVerificationTokenService.generateRawToken();
+
+        System.out.println("ACTIVATION_TOKEN: " + token);
+        // enviar correo
+
+        return userResponse;
     }
 }
