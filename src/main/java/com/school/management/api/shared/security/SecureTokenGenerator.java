@@ -15,4 +15,11 @@ public class SecureTokenGenerator {
         secureRandom.nextBytes(randomBytes);
         return encoder.encodeToString(randomBytes);
     }
+
+    public String generate() {
+        int bytes = 32;
+        byte[] randomBytes = new byte[bytes];
+        secureRandom.nextBytes(randomBytes);
+        return encoder.encodeToString(randomBytes);
+    }
 }

@@ -2,6 +2,7 @@ package com.school.management.api.seed;
 
 import com.school.management.api.user.Role;
 import com.school.management.api.user.UserCreationService;
+import com.school.management.api.user.UserStatus;
 import com.school.management.api.user.dto.CreateUserRequest;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +35,7 @@ public class DataInitializer implements CommandLineRunner {
                     .lastName("Admin")
                     .build();
 
-            userCreationService.createUser(request, Set.of(Role.ADMIN), true);
+            userCreationService.createUser(request, Set.of(Role.ADMIN), UserStatus.DISABLED);
         }
     }
 }

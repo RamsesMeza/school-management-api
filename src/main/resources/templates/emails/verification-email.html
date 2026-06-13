@@ -1,0 +1,29 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Verifica tu cuenta</title>
+  </head>
+  <body>
+    <h2>Hola <span th:text="${name}">Usuario</span></h2>
+
+    <p>Gracias por registrarte.</p>
+
+    <p>Haz clic en el botón para activar tu cuenta:</p>
+
+    <a
+      th:href="${link}"
+      style="
+        background: #2563eb;
+        color: white;
+        padding: 10px 16px;
+        text-decoration: none;
+        border-radius: 6px;
+      "
+    >
+      Verificar cuenta
+    </a>
+
+    <p>Este enlace expira en <span th:text="${hours}">24</span> horas.</p>
+  </body>
+</html>

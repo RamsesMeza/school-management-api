@@ -3,20 +3,24 @@ package com.school.management.api.auth;
 import com.school.management.api.auth.dto.AuthResponse;
 import com.school.management.api.auth.dto.LoginRequest;
 import com.school.management.api.auth.dto.RegisterRequest;
-import com.school.management.api.auth.email.verification.EmailVerificationTokenService;
 import com.school.management.api.auth.exception.BadCredentialsException;
+import com.school.management.api.auth.service.UserVerificationTokenService;
 import com.school.management.api.security.JwtService;
 import com.school.management.api.user.Role;
 import com.school.management.api.user.User;
 import com.school.management.api.user.UserCreationService;
 import com.school.management.api.user.UserMapper;
 import com.school.management.api.user.UserRepository;
+import com.school.management.api.user.UserStatus;
 import com.school.management.api.user.dto.UserResponse;
+import jakarta.transaction.Transactional;
 import java.util.Set;
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -24,22 +28,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final UserMapper userMapper;
     private final UserCreationService userCreationService;
-    private final EmailVerificationTokenService emailVerificationTokenService;
-
-    public AuthService(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            JwtService jwtService,
-            UserMapper userMapper,
-            UserCreationService userCreationService,
-            EmailVerificationTokenService emailVerificationTokenService) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.userMapper = userMapper;
-        this.userCreationService = userCreationService;
-        this.emailVerificationTokenService = emailVerificationTokenService;
-    }
+    private final UserVerificationTokenService userVerificationTokenService;
 
     public AuthResponse login(LoginRequest request) {
 
@@ -62,14 +51,11 @@ public class AuthService {
         return AuthResponse.builder().token(token).user(userResponse).build();
     }
 
-    public UserResponse registerUser(RegisterRequest request) {
+    @Transactional
+    public UserResponse register(RegisterRequest request) {
 
-        UserResponse userResponse = userCreationService.createUser(request, Set.of(Role.STUDENT), false);
-
-        String token = emailVerificationTokenService.generateRawToken();
-
-        System.out.println("ACTIVATION_TOKEN: " + token);
-        // enviar correo
+        UserResponse userResponse = userCreationService.createUser(request, Set.of(Role.STUDENT), UserStatus.DISABLED);
+        userVerificationTokenService.verify(userResponse.getId());
 
         return userResponse;
     }

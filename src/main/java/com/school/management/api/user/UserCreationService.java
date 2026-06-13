@@ -24,7 +24,7 @@ public class UserCreationService {
         return userRepository.existsByEmail(email);
     }
 
-    public UserResponse createUser(UserCreationRequest request, Set<Role> roles, boolean status) {
+    public UserResponse createUser(UserCreationRequest request, Set<Role> roles, UserStatus status) {
 
         String email = request.getEmail().trim().toLowerCase();
 
