@@ -3,8 +3,10 @@ package com.school.management.api.auth;
 import com.school.management.api.auth.dto.AuthResponse;
 import com.school.management.api.auth.dto.LoginRequest;
 import com.school.management.api.auth.dto.RegisterRequest;
+import com.school.management.api.auth.dto.VerifyEmailRequest;
 import com.school.management.api.auth.exception.BadCredentialsException;
 import com.school.management.api.auth.service.UserVerificationTokenService;
+import com.school.management.api.security.AuthenticatedUser;
 import com.school.management.api.security.JwtService;
 import com.school.management.api.user.Role;
 import com.school.management.api.user.User;
@@ -13,6 +15,7 @@ import com.school.management.api.user.UserMapper;
 import com.school.management.api.user.UserRepository;
 import com.school.management.api.user.UserStatus;
 import com.school.management.api.user.dto.UserResponse;
+import com.school.management.api.user.exception.UserNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -55,8 +58,20 @@ public class AuthService {
     public UserResponse register(RegisterRequest request) {
 
         UserResponse userResponse = userCreationService.createUser(request, Set.of(Role.STUDENT), UserStatus.DISABLED);
-        userVerificationTokenService.verify(userResponse.getId());
+        userVerificationTokenService.sendVerificationEmail(userResponse.getId());
 
         return userResponse;
+    }
+
+    public void verifyEmail(AuthenticatedUser currentUser, VerifyEmailRequest req) {
+        User user = userRepository
+                .findByEmail(currentUser.getEmail())
+                .orElseThrow(() -> new UserNotFoundException(currentUser.getId()));
+
+        user.verifyEmail();
+
+        userRepository.save(user);
+
+        userVerificationTokenService.useToken(req.getToken());
     }
 }

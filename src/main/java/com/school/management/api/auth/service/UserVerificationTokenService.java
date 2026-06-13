@@ -22,7 +22,7 @@ public class UserVerificationTokenService {
     private final UserRepository userRepository;
     private final EmailService emailService;
 
-    public void verify(Long userId) {
+    public void sendVerificationEmail(Long userId) {
 
         User user = userRepository.getReferenceById(userId);
 
@@ -38,5 +38,26 @@ public class UserVerificationTokenService {
         activationTokeRepository.save(entity);
 
         emailService.sendVerificationUser(user, tokenHashed);
+    }
+
+    public void useToken(String token) {
+        String tokenHashed = tokenHasher.hash(token);
+
+        // TODO: Change to a better exeption
+        ActivationToken activation = activationTokeRepository
+                .findByToken(tokenHashed)
+                .orElseThrow(() -> new IllegalArgumentException("No found"));
+
+        if (activation.isExpired()) {
+            throw new IllegalArgumentException("Expired");
+        }
+
+        if (activation.isRevoked()) {
+            throw new IllegalArgumentException("Revoked");
+        }
+
+        activation.markAsUsed();
+
+        activationTokeRepository.save(activation);
     }
 }

@@ -10,4 +10,6 @@ public interface ActivationTokeRepository extends JpaRepository<ActivationToken,
     Optional<ActivationToken> findByUserId(User userId);
 
     boolean existsByUserId(User userId);
+
+    Optional<ActivationToken> findByToken(String token);
 }
