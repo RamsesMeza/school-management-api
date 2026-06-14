@@ -9,7 +9,10 @@ import com.school.management.api.auth.dto.VerifyEmailRequest;
 import com.school.management.api.auth.entity.User;
 import com.school.management.api.auth.entity.enums.Role;
 import com.school.management.api.auth.entity.enums.UserStatus;
+import com.school.management.api.auth.exception.AccountDisabledException;
+import com.school.management.api.auth.exception.AccountLockedException;
 import com.school.management.api.auth.exception.BadCredentialsException;
+import com.school.management.api.auth.exception.EmailNotVerifiedException;
 import com.school.management.api.auth.mapper.UserMapper;
 import com.school.management.api.auth.repository.UserRepository;
 import com.school.management.api.security.JwtService;
@@ -35,8 +38,20 @@ public class AuthService {
         String email = request.getEmail().trim().toLowerCase();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new BadCredentialsException());
 
-        if (!user.canLogin()) {
-            throw new BadCredentialsException();
+        if (user.isDeleted()) {
+            throw new BadCredentialsException(); // o 403, según política
+        }
+
+        if (!user.isEmailVerified()) {
+            throw new EmailNotVerifiedException();
+        }
+
+        if (user.getStatus() == UserStatus.DISABLED) {
+            throw new AccountDisabledException();
+        }
+
+        if (user.getStatus() == UserStatus.LOCKED) {
+            throw new AccountLockedException();
         }
 
         boolean passwordMatches = passwordEncoder.matches(request.getPassword(), user.getPassword());

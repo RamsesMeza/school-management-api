@@ -80,11 +80,7 @@ public class User extends AuditableEntity {
     }
 
     public boolean isActive() {
-        return status == UserStatus.ACTIVE && !isDeleted();
-    }
-
-    public boolean canLogin() {
-        return !isDeleted() && isEmailVerified();
+        return !isDeleted() && isEmailVerified() && status == UserStatus.ACTIVE;
     }
 
     public void verifyEmail() {
