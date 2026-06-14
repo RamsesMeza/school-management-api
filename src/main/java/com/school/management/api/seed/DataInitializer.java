@@ -35,7 +35,7 @@ public class DataInitializer implements CommandLineRunner {
                     .lastName("Admin")
                     .build();
 
-            userCreationService.createUser(request, Set.of(Role.ADMIN), UserStatus.DISABLED);
+            userCreationService.createUser(request, Set.of(Role.ADMIN), UserStatus.ACTIVE);
         }
     }
 }

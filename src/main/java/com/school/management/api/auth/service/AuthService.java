@@ -37,7 +37,7 @@ public class AuthService {
         String email = request.getEmail().trim().toLowerCase();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new BadCredentialsException());
 
-        if (!user.isActive()) {
+        if (!user.canLogin()) {
             throw new BadCredentialsException();
         }
 
@@ -82,7 +82,7 @@ public class AuthService {
                 .findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("User not find By email"));
 
-        if (user.isVerified()) {
+        if (user.isEmailVerified()) {
             throw new IllegalAccessError("Ya esta verificado");
         }
 

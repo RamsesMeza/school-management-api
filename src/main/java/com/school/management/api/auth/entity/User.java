@@ -75,12 +75,16 @@ public class User extends AuditableEntity {
         return deletedAt != null;
     }
 
-    public boolean isVerified() {
+    public boolean isEmailVerified() {
         return emailVerifiedAt != null;
     }
 
     public boolean isActive() {
         return status == UserStatus.ACTIVE && !isDeleted();
+    }
+
+    public boolean canLogin() {
+        return !isDeleted() && isEmailVerified();
     }
 
     public void verifyEmail() {
