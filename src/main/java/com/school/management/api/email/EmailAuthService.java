@@ -1,10 +1,9 @@
 package com.school.management.api.email;
 
-import com.school.management.api.user.User;
+import com.school.management.api.auth.entity.User;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -13,21 +12,10 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @AllArgsConstructor
 @Service
-public class EmailService {
+public class EmailAuthService {
 
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
-
-    public void sendEmail(String to, String subject, String message) {
-
-        SimpleMailMessage email = new SimpleMailMessage();
-
-        email.setTo(to);
-        email.setSubject(subject);
-        email.setText(message);
-
-        mailSender.send(email);
-    }
 
     public void sendVerificationUser(User user, String link) {
 

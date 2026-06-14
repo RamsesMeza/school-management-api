@@ -1,8 +1,8 @@
 package com.school.management.api.shared.exception;
 
 import com.school.management.api.auth.exception.BadCredentialsException;
-import com.school.management.api.user.exception.EmailDuplicatedException;
-import com.school.management.api.user.exception.UserNotFoundException;
+import com.school.management.api.auth.exception.UserEmailDuplicatedException;
+import com.school.management.api.auth.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -71,9 +71,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(error);
     }
 
-    @ExceptionHandler(EmailDuplicatedException.class)
+    @ExceptionHandler(UserEmailDuplicatedException.class)
     public ResponseEntity<ErrorResponse> handleEmailDuplicatedException(
-            EmailDuplicatedException exception, HttpServletRequest request) {
+            UserEmailDuplicatedException exception, HttpServletRequest request) {
 
         ErrorResponse error = ErrorResponse.builder()
                 .status(HttpStatus.CONFLICT.value())

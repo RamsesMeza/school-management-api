@@ -1,9 +1,9 @@
 package com.school.management.api.seed;
 
-import com.school.management.api.user.Role;
-import com.school.management.api.user.UserCreationService;
-import com.school.management.api.user.UserStatus;
-import com.school.management.api.user.dto.CreateUserRequest;
+import com.school.management.api.auth.dto.CreateUserRequest;
+import com.school.management.api.auth.entity.enums.Role;
+import com.school.management.api.auth.entity.enums.UserStatus;
+import com.school.management.api.auth.service.UserCreationService;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;

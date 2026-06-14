@@ -1,6 +1,5 @@
 package com.school.management.api.auth.dto;
 
-import com.school.management.api.user.dto.UserCreationRequest;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -15,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegisterRequest implements UserCreationRequest {
+public class RegisterRequest implements ICreateUserRequest {
     @NotBlank(message = "Name is required") private String name;
 
     @NotBlank(message = "Last name is required") private String lastName;

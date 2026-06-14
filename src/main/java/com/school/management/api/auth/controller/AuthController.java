@@ -1,13 +1,14 @@
-package com.school.management.api.auth;
+package com.school.management.api.auth.controller;
 
 import com.school.management.api.auth.dto.AuthResponse;
 import com.school.management.api.auth.dto.LoginRequest;
 import com.school.management.api.auth.dto.RegisterRequest;
 import com.school.management.api.auth.dto.ResendVerificationRequest;
+import com.school.management.api.auth.dto.UserResponse;
 import com.school.management.api.auth.dto.VerifyEmailRequest;
+import com.school.management.api.auth.service.AuthService;
+import com.school.management.api.auth.service.UserService;
 import com.school.management.api.security.AuthenticatedUser;
-import com.school.management.api.user.UserService;
-import com.school.management.api.user.dto.UserResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

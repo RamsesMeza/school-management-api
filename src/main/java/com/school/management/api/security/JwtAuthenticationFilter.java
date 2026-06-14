@@ -1,7 +1,7 @@
 package com.school.management.api.security;
 
-import com.school.management.api.user.User;
-import com.school.management.api.user.UserRepository;
+import com.school.management.api.auth.entity.User;
+import com.school.management.api.auth.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

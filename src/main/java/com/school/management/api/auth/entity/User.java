@@ -1,6 +1,7 @@
-package com.school.management.api.user;
+package com.school.management.api.auth.entity;
 
-import com.school.management.api.auth.entity.ActivationToken;
+import com.school.management.api.auth.entity.enums.Role;
+import com.school.management.api.auth.entity.enums.UserStatus;
 import com.school.management.api.professor.ProfessorProfile;
 import com.school.management.api.shared.entity.AuditableEntity;
 import jakarta.persistence.CollectionTable;
@@ -43,7 +44,7 @@ public class User extends AuditableEntity {
     private ProfessorProfile professorProfile;
 
     @OneToMany(mappedBy = "userId")
-    private Set<ActivationToken> activationTokens;
+    private Set<EmailVerificationToken> emailVerificationTokens;
 
     @Column(nullable = false)
     private String name;

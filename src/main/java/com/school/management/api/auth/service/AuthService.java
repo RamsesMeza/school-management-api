@@ -1,22 +1,20 @@
-package com.school.management.api.auth;
+package com.school.management.api.auth.service;
 
 import com.school.management.api.auth.dto.AuthResponse;
 import com.school.management.api.auth.dto.LoginRequest;
 import com.school.management.api.auth.dto.RegisterRequest;
 import com.school.management.api.auth.dto.ResendVerificationRequest;
+import com.school.management.api.auth.dto.UserResponse;
 import com.school.management.api.auth.dto.VerifyEmailRequest;
+import com.school.management.api.auth.entity.User;
+import com.school.management.api.auth.entity.enums.Role;
+import com.school.management.api.auth.entity.enums.UserStatus;
 import com.school.management.api.auth.exception.BadCredentialsException;
-import com.school.management.api.auth.service.UserVerificationTokenService;
+import com.school.management.api.auth.exception.UserNotFoundException;
+import com.school.management.api.auth.mapper.UserMapper;
+import com.school.management.api.auth.repository.UserRepository;
 import com.school.management.api.security.AuthenticatedUser;
 import com.school.management.api.security.JwtService;
-import com.school.management.api.user.Role;
-import com.school.management.api.user.User;
-import com.school.management.api.user.UserCreationService;
-import com.school.management.api.user.UserMapper;
-import com.school.management.api.user.UserRepository;
-import com.school.management.api.user.UserStatus;
-import com.school.management.api.user.dto.UserResponse;
-import com.school.management.api.user.exception.UserNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -32,7 +30,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final UserMapper userMapper;
     private final UserCreationService userCreationService;
-    private final UserVerificationTokenService userVerificationTokenService;
+    private final EmailVerificationTokenService emailVerificationTokenService;
 
     public AuthResponse login(LoginRequest request) {
 
@@ -59,11 +57,12 @@ public class AuthService {
     public UserResponse register(RegisterRequest request) {
 
         UserResponse userResponse = userCreationService.createUser(request, Set.of(Role.STUDENT), UserStatus.DISABLED);
-        userVerificationTokenService.sendVerificationEmail(userResponse.getId());
+        emailVerificationTokenService.sendVerificationEmail(userResponse.getId());
 
         return userResponse;
     }
 
+    @Transactional
     public void verifyEmail(AuthenticatedUser currentUser, VerifyEmailRequest req) {
         User user = userRepository
                 .findByEmail(currentUser.getEmail())
@@ -73,9 +72,10 @@ public class AuthService {
 
         userRepository.save(user);
 
-        userVerificationTokenService.useToken(req.getToken());
+        emailVerificationTokenService.useToken(req.getToken());
     }
 
+    @Transactional
     public void resendVerificationEmail(ResendVerificationRequest request) {
 
         User user = userRepository
@@ -86,7 +86,7 @@ public class AuthService {
             throw new IllegalAccessError("Ya esta verificado");
         }
 
-        userVerificationTokenService.revokeActivationToken(user.getId());
-        userVerificationTokenService.sendVerificationEmail(user.getId());
+        emailVerificationTokenService.revokeEmailVerificationTokens(user.getId());
+        emailVerificationTokenService.sendVerificationEmail(user.getId());
     }
 }

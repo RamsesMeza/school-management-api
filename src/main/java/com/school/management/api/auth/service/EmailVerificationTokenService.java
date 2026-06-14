@@ -1,12 +1,12 @@
 package com.school.management.api.auth.service;
 
-import com.school.management.api.auth.entity.ActivationToken;
-import com.school.management.api.auth.repository.ActivationTokeRepository;
-import com.school.management.api.email.EmailService;
+import com.school.management.api.auth.entity.EmailVerificationToken;
+import com.school.management.api.auth.entity.User;
+import com.school.management.api.auth.repository.EmailVerificationTokenRepository;
+import com.school.management.api.auth.repository.UserRepository;
+import com.school.management.api.email.EmailAuthService;
 import com.school.management.api.shared.security.SecureTokenGenerator;
 import com.school.management.api.shared.security.TokenHasher;
-import com.school.management.api.user.User;
-import com.school.management.api.user.UserRepository;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class UserVerificationTokenService {
+public class EmailVerificationTokenService {
 
     private final SecureTokenGenerator secureTokenGenerator;
     private final TokenHasher tokenHasher;
-    private final ActivationTokeRepository activationTokeRepository;
+    private final EmailVerificationTokenRepository emailVerificationTokenRepository;
     private final UserRepository userRepository;
-    private final EmailService emailService;
+    private final EmailAuthService emailAuthService;
 
     public void sendVerificationEmail(Long userId) {
 
@@ -30,24 +30,24 @@ public class UserVerificationTokenService {
         String token = secureTokenGenerator.generate();
         String tokenHashed = tokenHasher.hash(token);
 
-        ActivationToken entity = ActivationToken.builder()
+        EmailVerificationToken entity = EmailVerificationToken.builder()
                 .token(tokenHashed)
                 .expiresAt(Instant.now().plus(Duration.ofHours(24)))
                 .userId(user)
                 .build();
 
-        activationTokeRepository.save(entity);
+        emailVerificationTokenRepository.save(entity);
 
-        emailService.sendVerificationUser(user, tokenHashed);
+        emailAuthService.sendVerificationUser(user, tokenHashed);
     }
 
-    public void revokeActivationToken(Long userId) {
+    public void revokeEmailVerificationTokens(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        List<ActivationToken> tokens = activationTokeRepository.findAllByUserId(user);
+        List<EmailVerificationToken> tokens = emailVerificationTokenRepository.findAllByUserId(user);
 
         tokens.stream().forEach((t) -> t.revoke());
 
-        activationTokeRepository.saveAll(tokens);
+        emailVerificationTokenRepository.saveAll(tokens);
         System.out.println(tokens);
     }
 
@@ -55,7 +55,7 @@ public class UserVerificationTokenService {
         String tokenHashed = tokenHasher.hash(token);
 
         // TODO: Change to a better exeption
-        ActivationToken activation = activationTokeRepository
+        EmailVerificationToken activation = emailVerificationTokenRepository
                 .findByToken(tokenHashed)
                 .orElseThrow(() -> new IllegalArgumentException("No found"));
 
@@ -69,6 +69,6 @@ public class UserVerificationTokenService {
 
         activation.markAsUsed();
 
-        activationTokeRepository.save(activation);
+        emailVerificationTokenRepository.save(activation);
     }
 }

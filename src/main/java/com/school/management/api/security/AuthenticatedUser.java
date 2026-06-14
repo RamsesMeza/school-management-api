@@ -1,6 +1,6 @@
 package com.school.management.api.security;
 
-import com.school.management.api.user.Role;
+import com.school.management.api.auth.entity.enums.Role;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

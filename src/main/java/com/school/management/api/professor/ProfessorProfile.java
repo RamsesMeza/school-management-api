@@ -1,6 +1,6 @@
 package com.school.management.api.professor;
 
-import com.school.management.api.user.User;
+import com.school.management.api.auth.entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
