@@ -1,9 +1,10 @@
 package com.school.management.api.seed;
 
-import com.school.management.api.auth.dto.CreateUserRequest;
+import com.school.management.api.auth.dto.CreateAdminUserRequest;
 import com.school.management.api.auth.entity.enums.Role;
 import com.school.management.api.auth.entity.enums.UserStatus;
 import com.school.management.api.auth.service.UserCreationService;
+import java.time.Instant;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -28,11 +29,12 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) {
 
         if (!userCreationService.userExistByEmail(email)) {
-            CreateUserRequest request = CreateUserRequest.builder()
+            CreateAdminUserRequest request = CreateAdminUserRequest.builder()
                     .email(email)
                     .password(password)
                     .name("System")
                     .lastName("Admin")
+                    .emailVerifiedAt(Instant.now())
                     .build();
 
             userCreationService.createUser(request, Set.of(Role.ADMIN), UserStatus.ACTIVE);

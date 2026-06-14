@@ -18,7 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateUserRequest implements ICreateUserRequest {
+public class CreateAdminUserRequest implements ICreateUserRequest {
 
     @NotBlank(message = "Name is required") private String name;
 
@@ -28,10 +28,7 @@ public class CreateUserRequest implements ICreateUserRequest {
 
     @NotBlank(message = "Password is required") @Size(min = 8, message = "Password must have at least 8 characters") private String password;
 
-    @NotNull(message = "Role is required") private Set<Role> roles;
+    private Instant emailVerifiedAt;
 
-    @Override
-    public Instant getEmailVerifiedAt() {
-        return null;
-    }
+    @NotNull(message = "Role is required") private Set<Role> roles;
 }

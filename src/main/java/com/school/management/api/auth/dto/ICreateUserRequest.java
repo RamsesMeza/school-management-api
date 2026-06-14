@@ -1,5 +1,7 @@
 package com.school.management.api.auth.dto;
 
+import java.time.Instant;
+
 public interface ICreateUserRequest {
     String getName();
 
@@ -8,4 +10,6 @@ public interface ICreateUserRequest {
     String getEmail();
 
     String getPassword();
+
+    Instant getEmailVerifiedAt();
 }

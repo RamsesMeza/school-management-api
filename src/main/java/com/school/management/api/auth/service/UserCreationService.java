@@ -8,6 +8,7 @@ import com.school.management.api.auth.entity.enums.UserStatus;
 import com.school.management.api.auth.exception.UserEmailDuplicatedException;
 import com.school.management.api.auth.mapper.UserMapper;
 import com.school.management.api.auth.repository.UserRepository;
+import java.time.Instant;
 import java.util.Set;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,10 @@ public class UserCreationService {
                 .roles(roles)
                 .status(status)
                 .build();
+
+        if (request.getEmailVerifiedAt() != null) {
+            user.setEmailVerifiedAt(Instant.now());
+        }
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
