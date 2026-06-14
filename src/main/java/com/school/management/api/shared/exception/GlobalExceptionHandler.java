@@ -5,6 +5,7 @@ import com.school.management.api.auth.exception.EmailVerificationTokenExpiredExc
 import com.school.management.api.auth.exception.EmailVerificationTokenNotFoundException;
 import com.school.management.api.auth.exception.EmailVerificationTokenRevokedException;
 import com.school.management.api.auth.exception.EmailVerificationTokenWasUsedException;
+import com.school.management.api.auth.exception.JwtAuthenticationFilterException;
 import com.school.management.api.auth.exception.UserEmailDuplicatedException;
 import com.school.management.api.auth.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -163,5 +164,20 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(JwtAuthenticationFilterException.class)
+    public ResponseEntity<ErrorResponse> handleJwtAuthenticationFilterException(
+            JwtAuthenticationFilterException exception, HttpServletRequest request) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                .message(exception.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 }
