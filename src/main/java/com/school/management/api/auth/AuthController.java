@@ -3,6 +3,7 @@ package com.school.management.api.auth;
 import com.school.management.api.auth.dto.AuthResponse;
 import com.school.management.api.auth.dto.LoginRequest;
 import com.school.management.api.auth.dto.RegisterRequest;
+import com.school.management.api.auth.dto.ResendVerificationRequest;
 import com.school.management.api.auth.dto.VerifyEmailRequest;
 import com.school.management.api.security.AuthenticatedUser;
 import com.school.management.api.user.UserService;
@@ -44,10 +45,17 @@ public class AuthController {
         return ResponseEntity.ok(userService.findById(currentUser.getId()));
     }
 
-    @PostMapping("verify-email")
+    @PostMapping("/verify-email")
     public void verifyEmail(
             @AuthenticationPrincipal AuthenticatedUser currentUser, @Valid @RequestBody VerifyEmailRequest request) {
-
         authService.verifyEmail(currentUser, request);
+    }
+
+    @PostMapping("/resend-verification")
+    public String resendVerificationEmail(@Valid @RequestBody ResendVerificationRequest request) {
+
+        authService.resendVerificationEmail(request);
+
+        return "todo bine";
     }
 }

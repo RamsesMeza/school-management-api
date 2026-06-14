@@ -9,6 +9,7 @@ import com.school.management.api.user.User;
 import com.school.management.api.user.UserRepository;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,16 @@ public class UserVerificationTokenService {
         activationTokeRepository.save(entity);
 
         emailService.sendVerificationUser(user, tokenHashed);
+    }
+
+    public void revokeActivationToken(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        List<ActivationToken> tokens = activationTokeRepository.findAllByUserId(user);
+
+        tokens.stream().forEach((t) -> t.revoke());
+
+        activationTokeRepository.saveAll(tokens);
+        System.out.println(tokens);
     }
 
     public void useToken(String token) {

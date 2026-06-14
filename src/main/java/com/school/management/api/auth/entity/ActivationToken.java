@@ -50,6 +50,10 @@ public class ActivationToken extends AuditableEntity {
         return Instant.now().isAfter(expiresAt);
     }
 
+    public void revoke() {
+        this.revokedAt = Instant.now();
+    }
+
     public void markAsUsed() {
         this.usedAt = Instant.now();
     }

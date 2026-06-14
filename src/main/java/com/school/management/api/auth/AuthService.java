@@ -3,6 +3,7 @@ package com.school.management.api.auth;
 import com.school.management.api.auth.dto.AuthResponse;
 import com.school.management.api.auth.dto.LoginRequest;
 import com.school.management.api.auth.dto.RegisterRequest;
+import com.school.management.api.auth.dto.ResendVerificationRequest;
 import com.school.management.api.auth.dto.VerifyEmailRequest;
 import com.school.management.api.auth.exception.BadCredentialsException;
 import com.school.management.api.auth.service.UserVerificationTokenService;
@@ -73,5 +74,19 @@ public class AuthService {
         userRepository.save(user);
 
         userVerificationTokenService.useToken(req.getToken());
+    }
+
+    public void resendVerificationEmail(ResendVerificationRequest request) {
+
+        User user = userRepository
+                .findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not find By email"));
+
+        if (user.isVerified()) {
+            throw new IllegalAccessError("Ya esta verificado");
+        }
+
+        userVerificationTokenService.revokeActivationToken(user.getId());
+        userVerificationTokenService.sendVerificationEmail(user.getId());
     }
 }
