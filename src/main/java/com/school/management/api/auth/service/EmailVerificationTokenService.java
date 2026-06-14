@@ -2,6 +2,11 @@ package com.school.management.api.auth.service;
 
 import com.school.management.api.auth.entity.EmailVerificationToken;
 import com.school.management.api.auth.entity.User;
+import com.school.management.api.auth.exception.EmailVerificationTokenExpiredException;
+import com.school.management.api.auth.exception.EmailVerificationTokenNotFoundException;
+import com.school.management.api.auth.exception.EmailVerificationTokenRevokedException;
+import com.school.management.api.auth.exception.EmailVerificationTokenWasUsedException;
+import com.school.management.api.auth.exception.UserNotFoundException;
 import com.school.management.api.auth.repository.EmailVerificationTokenRepository;
 import com.school.management.api.auth.repository.UserRepository;
 import com.school.management.api.email.EmailAuthService;
@@ -38,11 +43,11 @@ public class EmailVerificationTokenService {
 
         emailVerificationTokenRepository.save(entity);
 
-        emailAuthService.sendVerificationUser(user, tokenHashed);
+        emailAuthService.sendVerificationUser(user, token);
     }
 
     public void revokeEmailVerificationTokens(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         List<EmailVerificationToken> tokens = emailVerificationTokenRepository.findAllByUserId(user);
 
         tokens.stream().forEach((t) -> t.revoke());
@@ -54,21 +59,32 @@ public class EmailVerificationTokenService {
     public void useToken(String token) {
         String tokenHashed = tokenHasher.hash(token);
 
-        // TODO: Change to a better exeption
-        EmailVerificationToken activation = emailVerificationTokenRepository
+        EmailVerificationToken dbToken = emailVerificationTokenRepository
                 .findByToken(tokenHashed)
-                .orElseThrow(() -> new IllegalArgumentException("No found"));
+                .orElseThrow(() -> new EmailVerificationTokenNotFoundException());
 
-        if (activation.isExpired()) {
-            throw new IllegalArgumentException("Expired");
+        if (dbToken.isUsed()) {
+            throw new EmailVerificationTokenWasUsedException();
         }
 
-        if (activation.isRevoked()) {
-            throw new IllegalArgumentException("Revoked");
+        if (dbToken.isExpired()) {
+            throw new EmailVerificationTokenExpiredException();
         }
 
-        activation.markAsUsed();
+        if (dbToken.isRevoked()) {
+            throw new EmailVerificationTokenRevokedException();
+        }
 
-        emailVerificationTokenRepository.save(activation);
+        dbToken.markAsUsed();
+
+        emailVerificationTokenRepository.save(dbToken);
+
+        Long userId = dbToken.getUserId().getId();
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        user.verifyEmail();
+
+        userRepository.save(user);
     }
 }

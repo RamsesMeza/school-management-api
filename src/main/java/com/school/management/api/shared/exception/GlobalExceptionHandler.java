@@ -1,6 +1,10 @@
 package com.school.management.api.shared.exception;
 
 import com.school.management.api.auth.exception.BadCredentialsException;
+import com.school.management.api.auth.exception.EmailVerificationTokenExpiredException;
+import com.school.management.api.auth.exception.EmailVerificationTokenNotFoundException;
+import com.school.management.api.auth.exception.EmailVerificationTokenRevokedException;
+import com.school.management.api.auth.exception.EmailVerificationTokenWasUsedException;
 import com.school.management.api.auth.exception.UserEmailDuplicatedException;
 import com.school.management.api.auth.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -99,5 +103,65 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    @ExceptionHandler(EmailVerificationTokenNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleEmailVerificationTokenNotFoundException(
+            EmailVerificationTokenNotFoundException exception, HttpServletRequest request) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .message(exception.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(EmailVerificationTokenExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleEmailVerificationTokenExpiredException(
+            EmailVerificationTokenExpiredException exception, HttpServletRequest request) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(exception.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(EmailVerificationTokenRevokedException.class)
+    public ResponseEntity<ErrorResponse> handleEmailVerificationTokenRevokedException(
+            EmailVerificationTokenRevokedException exception, HttpServletRequest request) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(exception.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(EmailVerificationTokenWasUsedException.class)
+    public ResponseEntity<ErrorResponse> handleEmailVerificationTokenWasUsedException(
+            EmailVerificationTokenWasUsedException exception, HttpServletRequest request) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(exception.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 }

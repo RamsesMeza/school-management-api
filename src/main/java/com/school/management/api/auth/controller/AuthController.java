@@ -47,9 +47,8 @@ public class AuthController {
     }
 
     @PostMapping("/verify-email")
-    public void verifyEmail(
-            @AuthenticationPrincipal AuthenticatedUser currentUser, @Valid @RequestBody VerifyEmailRequest request) {
-        authService.verifyEmail(currentUser, request);
+    public void verifyEmail(@Valid @RequestBody VerifyEmailRequest request) {
+        authService.verifyEmail(request);
     }
 
     @PostMapping("/resend-verification")

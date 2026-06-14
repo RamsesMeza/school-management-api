@@ -10,10 +10,8 @@ import com.school.management.api.auth.entity.User;
 import com.school.management.api.auth.entity.enums.Role;
 import com.school.management.api.auth.entity.enums.UserStatus;
 import com.school.management.api.auth.exception.BadCredentialsException;
-import com.school.management.api.auth.exception.UserNotFoundException;
 import com.school.management.api.auth.mapper.UserMapper;
 import com.school.management.api.auth.repository.UserRepository;
-import com.school.management.api.security.AuthenticatedUser;
 import com.school.management.api.security.JwtService;
 import jakarta.transaction.Transactional;
 import java.util.Set;
@@ -63,15 +61,7 @@ public class AuthService {
     }
 
     @Transactional
-    public void verifyEmail(AuthenticatedUser currentUser, VerifyEmailRequest req) {
-        User user = userRepository
-                .findByEmail(currentUser.getEmail())
-                .orElseThrow(() -> new UserNotFoundException(currentUser.getId()));
-
-        user.verifyEmail();
-
-        userRepository.save(user);
-
+    public void verifyEmail(VerifyEmailRequest req) {
         emailVerificationTokenService.useToken(req.getToken());
     }
 
