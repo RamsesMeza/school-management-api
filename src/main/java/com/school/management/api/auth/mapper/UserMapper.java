@@ -1,6 +1,7 @@
-package com.school.management.api.user;
+package com.school.management.api.auth.mapper;
 
-import com.school.management.api.user.dto.UserResponse;
+import com.school.management.api.auth.dto.UserResponse;
+import com.school.management.api.auth.entity.User;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ public class UserMapper {
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .roles(user.getRoles())
+                .status(user.isActive())
                 .build();
     }
 

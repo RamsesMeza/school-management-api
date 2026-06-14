@@ -1,6 +1,6 @@
-package com.school.management.api.user.dto;
+package com.school.management.api.auth.dto;
 
-public interface UserCreationRequest {
+public interface ICreateUserRequest {
     String getName();
 
     String getLastName();

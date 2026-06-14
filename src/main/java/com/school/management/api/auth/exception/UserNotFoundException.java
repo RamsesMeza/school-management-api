@@ -1,4 +1,4 @@
-package com.school.management.api.user.exception;
+package com.school.management.api.auth.exception;
 
 public class UserNotFoundException extends RuntimeException {
 

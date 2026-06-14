@@ -1,6 +1,6 @@
-package com.school.management.api.user.dto;
+package com.school.management.api.security;
 
-import com.school.management.api.user.Role;
+import com.school.management.api.auth.entity.enums.Role;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,11 +13,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponse {
+public class AuthenticatedUser {
+
     private Long id;
-    private String name;
-    private String lastName;
     private String email;
-    private boolean status;
     private Set<Role> roles;
 }

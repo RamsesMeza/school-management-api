@@ -1,9 +1,10 @@
-package com.school.management.api.user;
+package com.school.management.api.auth.controller;
 
-import com.school.management.api.user.dto.CreateUserRequest;
-import com.school.management.api.user.dto.PatchUserRequest;
-import com.school.management.api.user.dto.UpdateUserRequest;
-import com.school.management.api.user.dto.UserResponse;
+import com.school.management.api.auth.dto.CreateUserRequest;
+import com.school.management.api.auth.dto.PatchUserRequest;
+import com.school.management.api.auth.dto.UpdateUserRequest;
+import com.school.management.api.auth.dto.UserResponse;
+import com.school.management.api.auth.service.UserService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;

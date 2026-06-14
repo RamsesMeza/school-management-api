@@ -1,8 +1,13 @@
-package com.school.management.api.user;
+package com.school.management.api.auth.service;
 
-import com.school.management.api.user.dto.UserCreationRequest;
-import com.school.management.api.user.dto.UserResponse;
-import com.school.management.api.user.exception.EmailDuplicatedException;
+import com.school.management.api.auth.dto.ICreateUserRequest;
+import com.school.management.api.auth.dto.UserResponse;
+import com.school.management.api.auth.entity.User;
+import com.school.management.api.auth.entity.enums.Role;
+import com.school.management.api.auth.entity.enums.UserStatus;
+import com.school.management.api.auth.exception.UserEmailDuplicatedException;
+import com.school.management.api.auth.mapper.UserMapper;
+import com.school.management.api.auth.repository.UserRepository;
 import java.util.Set;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,14 +25,18 @@ public class UserCreationService {
         this.userMapper = userMapper;
     }
 
-    public UserResponse createUser(UserCreationRequest request, Set<Role> roles) {
+    public boolean userExistByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public UserResponse createUser(ICreateUserRequest request, Set<Role> roles, UserStatus status) {
 
         String email = request.getEmail().trim().toLowerCase();
 
         boolean emailExist = userRepository.existsByEmail(email);
 
         if (emailExist) {
-            throw new EmailDuplicatedException(email);
+            throw new UserEmailDuplicatedException(email);
         }
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
@@ -38,7 +47,7 @@ public class UserCreationService {
                 .email(email)
                 .password(encodedPassword)
                 .roles(roles)
-                .status(false)
+                .status(status)
                 .build();
 
         return userMapper.toUserResponse(userRepository.save(user));

@@ -1,5 +1,6 @@
 package com.school.management.api.auth.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AuthResponse {
-    private String token;
-    private UserResponse user;
+public class VerifyEmailRequest {
+
+    @NotBlank(message = "Token is required") private String token;
 }

@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AuthResponse {
-    private String token;
-    private UserResponse user;
+public class PatchUserRequest {
+    private String name;
+    private String lastName;
 }

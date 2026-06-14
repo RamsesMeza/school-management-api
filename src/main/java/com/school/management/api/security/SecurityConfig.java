@@ -28,7 +28,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**")
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/register")
+                        .permitAll()
+                        .requestMatchers("/auth/login")
+                        .permitAll()
+                        .requestMatchers("/auth/resend-verification")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/**")
                         .hasAnyRole("ADMIN", "PROFESSOR")

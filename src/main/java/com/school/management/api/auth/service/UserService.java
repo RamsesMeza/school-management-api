@@ -1,10 +1,14 @@
-package com.school.management.api.user;
+package com.school.management.api.auth.service;
 
-import com.school.management.api.user.dto.CreateUserRequest;
-import com.school.management.api.user.dto.PatchUserRequest;
-import com.school.management.api.user.dto.UpdateUserRequest;
-import com.school.management.api.user.dto.UserResponse;
-import com.school.management.api.user.exception.UserNotFoundException;
+import com.school.management.api.auth.dto.CreateUserRequest;
+import com.school.management.api.auth.dto.PatchUserRequest;
+import com.school.management.api.auth.dto.UpdateUserRequest;
+import com.school.management.api.auth.dto.UserResponse;
+import com.school.management.api.auth.entity.User;
+import com.school.management.api.auth.entity.enums.UserStatus;
+import com.school.management.api.auth.exception.UserNotFoundException;
+import com.school.management.api.auth.mapper.UserMapper;
+import com.school.management.api.auth.repository.UserRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +34,7 @@ public class UserService {
     }
 
     public UserResponse create(CreateUserRequest request) {
-
-        return userCreationService.createUser(request, request.getRoles());
+        return userCreationService.createUser(request, request.getRoles(), UserStatus.ACTIVE);
     }
 
     public UserResponse update(Long id, UpdateUserRequest request) {

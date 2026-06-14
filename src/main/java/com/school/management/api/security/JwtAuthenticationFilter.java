@@ -1,7 +1,7 @@
 package com.school.management.api.security;
 
-import com.school.management.api.user.User;
-import com.school.management.api.user.UserRepository;
+import com.school.management.api.auth.entity.User;
+import com.school.management.api.auth.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,8 +48,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         .map(r -> new SimpleGrantedAuthority("ROLE_" + r.name()))
                         .toList();
 
+                AuthenticatedUser authenticatedUser =
+                        new AuthenticatedUser(user.getId(), user.getEmail(), user.getRoles());
+
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(user.getEmail(), null, authorities);
+                        new UsernamePasswordAuthenticationToken(authenticatedUser, null, authorities);
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
