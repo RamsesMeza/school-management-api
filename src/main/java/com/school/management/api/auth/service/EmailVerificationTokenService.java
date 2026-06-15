@@ -28,9 +28,7 @@ public class EmailVerificationTokenService {
     private final UserRepository userRepository;
     private final EmailAuthService emailAuthService;
 
-    public void sendVerificationEmail(Long userId) {
-
-        User user = userRepository.getReferenceById(userId);
+    private void verificationEmailFlow(User user) {
 
         String token = secureTokenGenerator.generate();
         String tokenHashed = tokenHasher.hash(token);
@@ -38,7 +36,7 @@ public class EmailVerificationTokenService {
         EmailVerificationToken entity = EmailVerificationToken.builder()
                 .token(tokenHashed)
                 .expiresAt(Instant.now().plus(Duration.ofHours(24)))
-                .userId(user)
+                .user(user)
                 .build();
 
         emailVerificationTokenRepository.save(entity);
@@ -46,14 +44,21 @@ public class EmailVerificationTokenService {
         emailAuthService.sendVerificationUser(user, token);
     }
 
-    public void revokeEmailVerificationTokens(Long userId) {
+    public void sendVerificationEmail(User user) {
+        verificationEmailFlow(user);
+    }
+
+    public void sendVerificationEmail(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        verificationEmailFlow(user);
+    }
+
+    public void revokeEmailVerificationTokens(User user) {
         List<EmailVerificationToken> tokens = emailVerificationTokenRepository.findAllByUserId(user);
 
         tokens.stream().forEach((t) -> t.revoke());
 
         emailVerificationTokenRepository.saveAll(tokens);
-        System.out.println(tokens);
     }
 
     public void useToken(String token) {
@@ -79,7 +84,7 @@ public class EmailVerificationTokenService {
 
         emailVerificationTokenRepository.save(dbToken);
 
-        Long userId = dbToken.getUserId().getId();
+        Long userId = dbToken.getUser().getId();
 
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 

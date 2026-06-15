@@ -13,6 +13,8 @@ import com.school.management.api.auth.exception.AccountDisabledException;
 import com.school.management.api.auth.exception.AccountLockedException;
 import com.school.management.api.auth.exception.BadCredentialsException;
 import com.school.management.api.auth.exception.EmailNotVerifiedException;
+import com.school.management.api.auth.exception.UserEmailAlreadyVerified;
+import com.school.management.api.auth.exception.UserNotFoundException;
 import com.school.management.api.auth.mapper.UserMapper;
 import com.school.management.api.auth.repository.UserRepository;
 import com.school.management.api.security.JwtService;
@@ -68,8 +70,7 @@ public class AuthService {
 
     @Transactional
     public UserResponse register(RegisterRequest request) {
-
-        UserResponse userResponse = userCreationService.createUser(request, Set.of(Role.STUDENT), UserStatus.DISABLED);
+        UserResponse userResponse = userCreationService.createUser(request, Set.of(Role.STUDENT), UserStatus.ACTIVE);
         emailVerificationTokenService.sendVerificationEmail(userResponse.getId());
 
         return userResponse;
@@ -85,13 +86,13 @@ public class AuthService {
 
         User user = userRepository
                 .findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not find By email"));
+                .orElseThrow(() -> new UserNotFoundException(request.getEmail()));
 
         if (user.isEmailVerified()) {
-            throw new IllegalAccessError("Ya esta verificado");
+            throw new UserEmailAlreadyVerified();
         }
 
-        emailVerificationTokenService.revokeEmailVerificationTokens(user.getId());
-        emailVerificationTokenService.sendVerificationEmail(user.getId());
+        emailVerificationTokenService.revokeEmailVerificationTokens(user);
+        emailVerificationTokenService.sendVerificationEmail(user);
     }
 }

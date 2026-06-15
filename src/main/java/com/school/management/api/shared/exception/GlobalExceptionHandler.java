@@ -10,6 +10,7 @@ import com.school.management.api.auth.exception.EmailVerificationTokenNotFoundEx
 import com.school.management.api.auth.exception.EmailVerificationTokenRevokedException;
 import com.school.management.api.auth.exception.EmailVerificationTokenWasUsedException;
 import com.school.management.api.auth.exception.JwtAuthenticationFilterException;
+import com.school.management.api.auth.exception.UserEmailAlreadyVerified;
 import com.school.management.api.auth.exception.UserEmailDuplicatedException;
 import com.school.management.api.auth.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -243,5 +244,20 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    @ExceptionHandler(UserEmailAlreadyVerified.class)
+    public ResponseEntity<ErrorResponse> handleUserEmailAlreadyVerified(
+            UserEmailAlreadyVerified exception, HttpServletRequest request) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(exception.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 }

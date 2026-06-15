@@ -43,7 +43,7 @@ public class User extends AuditableEntity {
     @JoinColumn(name = "professor_id")
     private ProfessorProfile professorProfile;
 
-    @OneToMany(mappedBy = "userId")
+    @OneToMany(mappedBy = "user")
     private Set<EmailVerificationToken> emailVerificationTokens;
 
     @Column(nullable = false)

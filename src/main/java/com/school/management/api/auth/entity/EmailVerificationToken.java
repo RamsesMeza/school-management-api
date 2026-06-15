@@ -29,5 +29,5 @@ public class EmailVerificationToken extends TokenEntity {
 
     @ManyToOne()
     @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 }

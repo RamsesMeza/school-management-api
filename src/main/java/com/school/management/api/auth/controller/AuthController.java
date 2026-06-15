@@ -2,6 +2,7 @@ package com.school.management.api.auth.controller;
 
 import com.school.management.api.auth.dto.AuthResponse;
 import com.school.management.api.auth.dto.LoginRequest;
+import com.school.management.api.auth.dto.MessageResponse;
 import com.school.management.api.auth.dto.RegisterRequest;
 import com.school.management.api.auth.dto.ResendVerificationRequest;
 import com.school.management.api.auth.dto.UserResponse;
@@ -47,15 +48,20 @@ public class AuthController {
     }
 
     @PostMapping("/verify-email")
-    public void verifyEmail(@Valid @RequestBody VerifyEmailRequest request) {
+    public ResponseEntity<MessageResponse> verifyEmail(@Valid @RequestBody VerifyEmailRequest request) {
         authService.verifyEmail(request);
+        return ResponseEntity.ok(MessageResponse.builder()
+                .message("Your email was verified successfully")
+                .build());
     }
 
     @PostMapping("/resend-verification")
-    public String resendVerificationEmail(@Valid @RequestBody ResendVerificationRequest request) {
+    public ResponseEntity<MessageResponse> resendVerificationEmail(
+            @Valid @RequestBody ResendVerificationRequest request) {
 
         authService.resendVerificationEmail(request);
-
-        return "todo bine";
+        return ResponseEntity.ok(MessageResponse.builder()
+                .message("Email verification link was send successfully")
+                .build());
     }
 }
