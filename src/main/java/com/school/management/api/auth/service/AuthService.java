@@ -40,8 +40,14 @@ public class AuthService {
         String email = request.getEmail().trim().toLowerCase();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new BadCredentialsException());
 
+        boolean passwordMatches = passwordEncoder.matches(request.getPassword(), user.getPassword());
+
+        if (!passwordMatches) {
+            throw new BadCredentialsException();
+        }
+
         if (user.isDeleted()) {
-            throw new BadCredentialsException(); // o 403, según política
+            throw new BadCredentialsException();
         }
 
         if (!user.isEmailVerified()) {
@@ -56,16 +62,14 @@ public class AuthService {
             throw new AccountLockedException();
         }
 
-        boolean passwordMatches = passwordEncoder.matches(request.getPassword(), user.getPassword());
-
-        if (!passwordMatches) {
-            throw new BadCredentialsException();
-        }
-
         String token = jwtService.generateToken(user);
         UserResponse userResponse = userMapper.toUserResponse(user);
 
-        return AuthResponse.builder().token(token).user(userResponse).build();
+        return AuthResponse.builder()
+                .token(token)
+                .user(userResponse)
+                .message("Login success")
+                .build();
     }
 
     @Transactional
@@ -83,10 +87,8 @@ public class AuthService {
 
     @Transactional
     public void resendVerificationEmail(ResendVerificationRequest request) {
-
-        User user = userRepository
-                .findByEmail(request.getEmail())
-                .orElseThrow(() -> new UserNotFoundException(request.getEmail()));
+        String email = request.getEmail().trim().toLowerCase();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
 
         if (user.isEmailVerified()) {
             throw new UserEmailAlreadyVerified();

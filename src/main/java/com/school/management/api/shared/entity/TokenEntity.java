@@ -1,5 +1,6 @@
 package com.school.management.api.shared.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import java.time.Instant;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,9 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @MappedSuperclass
 public abstract class TokenEntity extends AuditableEntity {
+    @Column(nullable = false, unique = true)
     private String token;
+
     private Instant expiresAt;
     private Instant usedAt;
     private Instant revokedAt;
