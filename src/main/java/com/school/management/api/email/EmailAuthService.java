@@ -41,4 +41,29 @@ public class EmailAuthService {
             throw new RuntimeException("Error sending email", e);
         }
     }
+
+    public void sendRecoverPasswordEmail(User user, String link) {
+
+        try {
+            Context context = new Context();
+            context.setVariable("name", user.getFullName());
+            context.setVariable("link", link);
+            context.setVariable("hours", 24);
+
+            String html = templateEngine.process("emails/recover-password-email", context);
+
+            MimeMessage message = mailSender.createMimeMessage();
+
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(user.getEmail());
+            helper.setSubject("Recover password");
+            helper.setText(html, true);
+
+            mailSender.send(message);
+
+        } catch (MessagingException e) {
+            throw new RuntimeException("Error sending email", e);
+        }
+    }
 }

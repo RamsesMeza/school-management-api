@@ -46,6 +46,9 @@ public class User extends AuditableEntity {
     @OneToMany(mappedBy = "user")
     private Set<EmailVerificationToken> emailVerificationTokens;
 
+    @OneToMany(mappedBy = "user")
+    private Set<RecoverPasswordToken> recoverPasswordTokens;
+
     @Column(nullable = false)
     private String name;
 

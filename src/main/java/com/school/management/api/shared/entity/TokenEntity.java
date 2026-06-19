@@ -19,7 +19,9 @@ public abstract class TokenEntity extends AuditableEntity {
     @Column(nullable = false, unique = true)
     private String token;
 
+    @Column(nullable = false)
     private Instant expiresAt;
+
     private Instant usedAt;
     private Instant revokedAt;
 

@@ -5,6 +5,7 @@ import com.school.management.api.auth.dto.LoginRequest;
 import com.school.management.api.auth.dto.MessageResponse;
 import com.school.management.api.auth.dto.RegisterRequest;
 import com.school.management.api.auth.dto.ResendVerificationRequest;
+import com.school.management.api.auth.dto.UserRecoverPasswordRequest;
 import com.school.management.api.auth.dto.UserResponse;
 import com.school.management.api.auth.dto.VerifyEmailRequest;
 import com.school.management.api.auth.service.AuthService;
@@ -40,7 +41,9 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<MessageResponse> register(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(MessageResponse.builder().message("Register success, verify your account ").build());
+                .body(MessageResponse.builder()
+                        .message("Register success, verify your account ")
+                        .build());
     }
 
     @GetMapping("/me")
@@ -63,6 +66,15 @@ public class AuthController {
         authService.resendVerificationEmail(request);
         return ResponseEntity.ok(MessageResponse.builder()
                 .message("Email verification link was send successfully")
+                .build());
+    }
+
+    @PostMapping("/recover-password")
+    public ResponseEntity<MessageResponse> recoverPassword(@Valid @RequestBody UserRecoverPasswordRequest request) {
+
+        authService.recoverPassword(request);
+        return ResponseEntity.ok(MessageResponse.builder()
+                .message("Recover password link was send successfully")
                 .build());
     }
 }

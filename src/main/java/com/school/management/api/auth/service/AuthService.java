@@ -4,6 +4,7 @@ import com.school.management.api.auth.dto.AuthResponse;
 import com.school.management.api.auth.dto.LoginRequest;
 import com.school.management.api.auth.dto.RegisterRequest;
 import com.school.management.api.auth.dto.ResendVerificationRequest;
+import com.school.management.api.auth.dto.UserRecoverPasswordRequest;
 import com.school.management.api.auth.dto.UserResponse;
 import com.school.management.api.auth.dto.VerifyEmailRequest;
 import com.school.management.api.auth.entity.User;
@@ -17,6 +18,7 @@ import com.school.management.api.auth.exception.UserEmailAlreadyVerified;
 import com.school.management.api.auth.exception.UserNotFoundException;
 import com.school.management.api.auth.mapper.UserMapper;
 import com.school.management.api.auth.repository.UserRepository;
+import com.school.management.api.email.EmailAuthService;
 import com.school.management.api.security.JwtService;
 import jakarta.transaction.Transactional;
 import java.util.Set;
@@ -34,6 +36,8 @@ public class AuthService {
     private final UserMapper userMapper;
     private final UserCreationService userCreationService;
     private final EmailVerificationTokenService emailVerificationTokenService;
+    private final EmailAuthService emailAuthService;
+    private final RecoverPasswordTokenService recoverPasswordTokenService;
 
     public AuthResponse login(LoginRequest request) {
 
@@ -96,5 +100,16 @@ public class AuthService {
 
         emailVerificationTokenService.revokeEmailVerificationTokens(user);
         emailVerificationTokenService.sendVerificationEmail(user);
+    }
+
+    @Transactional
+    public void recoverPassword(UserRecoverPasswordRequest request) {
+        String email = request.getEmail().trim().toLowerCase();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+
+        recoverPasswordTokenService.revokePevTokens(user);
+        String token = recoverPasswordTokenService.create(user);
+
+        emailAuthService.sendRecoverPasswordEmail(user, token);
     }
 }

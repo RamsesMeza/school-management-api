@@ -51,6 +51,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/auth/verify-email")
                         .permitAll()
+                        .requestMatchers("/auth/recover-password")
+                        .permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/**")
                         .hasAnyRole("ADMIN", "PROFESSOR")
                         .requestMatchers(HttpMethod.POST, "/users/**")
