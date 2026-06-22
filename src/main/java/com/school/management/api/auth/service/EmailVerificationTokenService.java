@@ -15,12 +15,16 @@ import com.school.management.api.shared.security.TokenHasher;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EmailVerificationTokenService {
+
+    @Value("${app.verify.email.token.duration}")
+    private Long tokenDuration;
 
     private final SecureTokenGenerator secureTokenGenerator;
     private final TokenHasher tokenHasher;
@@ -35,7 +39,7 @@ public class EmailVerificationTokenService {
 
         EmailVerificationToken entity = EmailVerificationToken.builder()
                 .token(tokenHashed)
-                .expiresAt(Instant.now().plus(Duration.ofHours(24)))
+                .expiresAt(Instant.now().plus(Duration.ofHours(tokenDuration)))
                 .user(user)
                 .build();
 

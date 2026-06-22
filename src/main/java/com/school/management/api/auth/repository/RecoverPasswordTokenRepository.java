@@ -11,7 +11,5 @@ public interface RecoverPasswordTokenRepository extends JpaRepository<RecoverPas
 
     List<RecoverPasswordToken> findAllByUserAndRevokedAtIsNullAndUsedAtIsNullAndExpiresAtAfter(User user, Instant now);
 
-    Optional<RecoverPasswordToken> findByUser(User user);
-
     Optional<RecoverPasswordToken> findByToken(String token);
 }

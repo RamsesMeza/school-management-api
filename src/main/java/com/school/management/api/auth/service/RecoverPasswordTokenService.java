@@ -9,12 +9,16 @@ import com.school.management.api.shared.security.TokenHasher;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RecoverPasswordTokenService {
+
+    @Value("${app.recover.password.token.duration}")
+    private Long tokenDuration;
 
     private final RecoverPasswordTokenRepository recoverPasswordTokenRepository;
     private final TokenHasher tokenHasher;
@@ -26,7 +30,7 @@ public class RecoverPasswordTokenService {
         String tokenHashed = tokenHasher.hash(token);
 
         RecoverPasswordToken entity = RecoverPasswordToken.builder()
-                .expiresAt(Instant.now().plus(Duration.ofHours(24)))
+                .expiresAt(Instant.now().plus(Duration.ofHours(tokenDuration)))
                 .token(tokenHashed)
                 .user(user)
                 .build();
@@ -41,8 +45,6 @@ public class RecoverPasswordTokenService {
                 recoverPasswordTokenRepository.findAllByUserAndRevokedAtIsNullAndUsedAtIsNullAndExpiresAtAfter(
                         user, Instant.now());
 
-        System.out.println("TOKENSS");
-        System.out.println(tokens);
         tokens.stream().forEach((t) -> t.revoke());
 
         recoverPasswordTokenRepository.saveAll(tokens);
