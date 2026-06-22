@@ -4,9 +4,11 @@ import com.school.management.api.auth.dto.AuthResponse;
 import com.school.management.api.auth.dto.LoginRequest;
 import com.school.management.api.auth.dto.RegisterRequest;
 import com.school.management.api.auth.dto.ResendVerificationRequest;
+import com.school.management.api.auth.dto.UpdatePasswordRequest;
 import com.school.management.api.auth.dto.UserRecoverPasswordRequest;
 import com.school.management.api.auth.dto.UserResponse;
 import com.school.management.api.auth.dto.VerifyEmailRequest;
+import com.school.management.api.auth.entity.RecoverPasswordToken;
 import com.school.management.api.auth.entity.User;
 import com.school.management.api.auth.entity.enums.Role;
 import com.school.management.api.auth.entity.enums.UserStatus;
@@ -14,6 +16,7 @@ import com.school.management.api.auth.exception.AccountDisabledException;
 import com.school.management.api.auth.exception.AccountLockedException;
 import com.school.management.api.auth.exception.BadCredentialsException;
 import com.school.management.api.auth.exception.EmailNotVerifiedException;
+import com.school.management.api.auth.exception.RecoverPasswordException;
 import com.school.management.api.auth.exception.UserEmailAlreadyVerified;
 import com.school.management.api.auth.exception.UserNotFoundException;
 import com.school.management.api.auth.mapper.UserMapper;
@@ -111,5 +114,26 @@ public class AuthService {
         String token = recoverPasswordTokenService.create(user);
 
         emailAuthService.sendRecoverPasswordEmail(user, token);
+    }
+
+    public void updatePassword(UpdatePasswordRequest request) {
+
+        RecoverPasswordToken token = recoverPasswordTokenService.findByToken(request.getToken());
+
+        boolean invalidToken = token.isExpired() || token.isRevoked() || token.isUsed();
+
+        if (invalidToken) {
+            throw new RecoverPasswordException("Invalid token");
+        }
+
+        Long userId = token.getUser().getId();
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        String newPasswordEncoded = passwordEncoder.encode(request.getPassword());
+        user.setPassword(newPasswordEncoded);
+
+        userRepository.save(user);
+        recoverPasswordTokenService.useToken(token);
     }
 }

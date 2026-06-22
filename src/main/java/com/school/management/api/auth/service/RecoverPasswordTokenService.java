@@ -2,6 +2,7 @@ package com.school.management.api.auth.service;
 
 import com.school.management.api.auth.entity.RecoverPasswordToken;
 import com.school.management.api.auth.entity.User;
+import com.school.management.api.auth.exception.RecoverPasswordTokenNotFound;
 import com.school.management.api.auth.repository.RecoverPasswordTokenRepository;
 import com.school.management.api.shared.security.SecureTokenGenerator;
 import com.school.management.api.shared.security.TokenHasher;
@@ -45,5 +46,19 @@ public class RecoverPasswordTokenService {
         tokens.stream().forEach((t) -> t.revoke());
 
         recoverPasswordTokenRepository.saveAll(tokens);
+    }
+
+    public RecoverPasswordToken findByToken(String token) {
+
+        String tokenHashed = tokenHasher.hash(token);
+
+        return recoverPasswordTokenRepository
+                .findByToken(tokenHashed)
+                .orElseThrow(() -> new RecoverPasswordTokenNotFound());
+    }
+
+    public void useToken(RecoverPasswordToken token) {
+        token.markAsUsed();
+        recoverPasswordTokenRepository.save(token);
     }
 }

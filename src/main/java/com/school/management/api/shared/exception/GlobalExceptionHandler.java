@@ -10,6 +10,8 @@ import com.school.management.api.auth.exception.EmailVerificationTokenNotFoundEx
 import com.school.management.api.auth.exception.EmailVerificationTokenRevokedException;
 import com.school.management.api.auth.exception.EmailVerificationTokenWasUsedException;
 import com.school.management.api.auth.exception.JwtAuthenticationFilterException;
+import com.school.management.api.auth.exception.RecoverPasswordException;
+import com.school.management.api.auth.exception.RecoverPasswordTokenNotFound;
 import com.school.management.api.auth.exception.UserEmailAlreadyVerified;
 import com.school.management.api.auth.exception.UserEmailDuplicatedException;
 import com.school.management.api.auth.exception.UserNotFoundException;
@@ -249,6 +251,36 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserEmailAlreadyVerified.class)
     public ResponseEntity<ErrorResponse> handleUserEmailAlreadyVerified(
             UserEmailAlreadyVerified exception, HttpServletRequest request) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(exception.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(RecoverPasswordTokenNotFound.class)
+    public ResponseEntity<ErrorResponse> handleRecoverPasswordTokenNotFound(
+            RecoverPasswordTokenNotFound exception, HttpServletRequest request) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .message(exception.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(RecoverPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleRecoverPasswordException(
+            RecoverPasswordException exception, HttpServletRequest request) {
 
         ErrorResponse error = ErrorResponse.builder()
                 .status(HttpStatus.CONFLICT.value())

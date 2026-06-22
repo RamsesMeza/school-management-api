@@ -5,6 +5,7 @@ import com.school.management.api.auth.dto.LoginRequest;
 import com.school.management.api.auth.dto.MessageResponse;
 import com.school.management.api.auth.dto.RegisterRequest;
 import com.school.management.api.auth.dto.ResendVerificationRequest;
+import com.school.management.api.auth.dto.UpdatePasswordRequest;
 import com.school.management.api.auth.dto.UserRecoverPasswordRequest;
 import com.school.management.api.auth.dto.UserResponse;
 import com.school.management.api.auth.dto.VerifyEmailRequest;
@@ -75,6 +76,16 @@ public class AuthController {
         authService.recoverPassword(request);
         return ResponseEntity.ok(MessageResponse.builder()
                 .message("Recover password link was send successfully")
+                .build());
+    }
+
+    @PostMapping("/update-password")
+    public ResponseEntity<MessageResponse> updatePassword(@Valid @RequestBody UpdatePasswordRequest request) {
+
+        authService.updatePassword(request);
+
+        return ResponseEntity.ok(MessageResponse.builder()
+                .message("Password updated successfully")
                 .build());
     }
 }
