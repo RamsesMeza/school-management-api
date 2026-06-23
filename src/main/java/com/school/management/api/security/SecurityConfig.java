@@ -55,6 +55,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/auth/update-password")
                         .permitAll()
+                        .requestMatchers("/auth/refresh")
+                        .permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/**")
                         .hasAnyRole("ADMIN", "PROFESSOR")
                         .requestMatchers(HttpMethod.POST, "/users/**")

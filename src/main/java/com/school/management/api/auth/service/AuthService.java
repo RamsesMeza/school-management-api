@@ -2,6 +2,8 @@ package com.school.management.api.auth.service;
 
 import com.school.management.api.auth.dto.AuthResponse;
 import com.school.management.api.auth.dto.LoginRequest;
+import com.school.management.api.auth.dto.RefreshTokenRequest;
+import com.school.management.api.auth.dto.RefreshTokenResponse;
 import com.school.management.api.auth.dto.RegisterRequest;
 import com.school.management.api.auth.dto.ResendVerificationRequest;
 import com.school.management.api.auth.dto.UpdatePasswordRequest;
@@ -9,6 +11,7 @@ import com.school.management.api.auth.dto.UserRecoverPasswordRequest;
 import com.school.management.api.auth.dto.UserResponse;
 import com.school.management.api.auth.dto.VerifyEmailRequest;
 import com.school.management.api.auth.entity.RecoverPasswordToken;
+import com.school.management.api.auth.entity.RefreshToken;
 import com.school.management.api.auth.entity.User;
 import com.school.management.api.auth.entity.enums.Role;
 import com.school.management.api.auth.entity.enums.UserStatus;
@@ -17,6 +20,7 @@ import com.school.management.api.auth.exception.AccountLockedException;
 import com.school.management.api.auth.exception.BadCredentialsException;
 import com.school.management.api.auth.exception.EmailNotVerifiedException;
 import com.school.management.api.auth.exception.RecoverPasswordException;
+import com.school.management.api.auth.exception.RefreshTokenException;
 import com.school.management.api.auth.exception.UserEmailAlreadyVerified;
 import com.school.management.api.auth.exception.UserNotFoundException;
 import com.school.management.api.auth.mapper.UserMapper;
@@ -41,6 +45,7 @@ public class AuthService {
     private final EmailVerificationTokenService emailVerificationTokenService;
     private final EmailAuthService emailAuthService;
     private final RecoverPasswordTokenService recoverPasswordTokenService;
+    private final RefreshTokenService refreshTokenService;
 
     public AuthResponse login(LoginRequest request) {
 
@@ -70,10 +75,12 @@ public class AuthService {
         }
 
         String token = jwtService.generateToken(user);
+        String refreshToken = refreshTokenService.create(user);
         UserResponse userResponse = userMapper.toUserResponse(user);
 
         return AuthResponse.builder()
                 .token(token)
+                .refreshToken(refreshToken)
                 .user(userResponse)
                 .message("Login success")
                 .build();
@@ -138,5 +145,27 @@ public class AuthService {
 
         userRepository.save(user);
         recoverPasswordTokenService.useToken(token);
+    }
+
+    @Transactional
+    public RefreshTokenResponse refresh(RefreshTokenRequest request) {
+
+        RefreshToken token = refreshTokenService.findByToken(request.getRefreshToken());
+
+        boolean invalidToken = token.isExpired() || token.isRevoked() || token.isUsed();
+
+        if (invalidToken) {
+            throw new RefreshTokenException("Invalid token");
+        }
+
+        refreshTokenService.use(token);
+
+        User user = token.getUser();
+
+        String newToken = jwtService.generateToken(user);
+        String refreshToken = refreshTokenService.create(user);
+
+        return RefreshTokenResponse.builder().token(newToken).refreshToken(refreshToken).build();
+
     }
 }

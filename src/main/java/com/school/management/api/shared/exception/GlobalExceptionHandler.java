@@ -12,6 +12,7 @@ import com.school.management.api.auth.exception.EmailVerificationTokenWasUsedExc
 import com.school.management.api.auth.exception.JwtAuthenticationFilterException;
 import com.school.management.api.auth.exception.RecoverPasswordException;
 import com.school.management.api.auth.exception.RecoverPasswordTokenNotFound;
+import com.school.management.api.auth.exception.RefreshTokenException;
 import com.school.management.api.auth.exception.UserEmailAlreadyVerified;
 import com.school.management.api.auth.exception.UserEmailDuplicatedException;
 import com.school.management.api.auth.exception.UserNotFoundException;
@@ -201,6 +202,21 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    @ExceptionHandler(RefreshTokenException.class)
+    public ResponseEntity<ErrorResponse> handleRefreshTokenException(
+            RefreshTokenException exception, HttpServletRequest request) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                .message(exception.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
     @ExceptionHandler(AccountLockedException.class)

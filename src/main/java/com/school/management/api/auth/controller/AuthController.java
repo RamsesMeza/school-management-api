@@ -3,6 +3,8 @@ package com.school.management.api.auth.controller;
 import com.school.management.api.auth.dto.AuthResponse;
 import com.school.management.api.auth.dto.LoginRequest;
 import com.school.management.api.auth.dto.MessageResponse;
+import com.school.management.api.auth.dto.RefreshTokenRequest;
+import com.school.management.api.auth.dto.RefreshTokenResponse;
 import com.school.management.api.auth.dto.RegisterRequest;
 import com.school.management.api.auth.dto.ResendVerificationRequest;
 import com.school.management.api.auth.dto.UpdatePasswordRequest;
@@ -37,6 +39,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshTokenResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(authService.refresh(request));
     }
 
     @PostMapping("/register")

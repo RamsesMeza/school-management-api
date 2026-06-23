@@ -11,9 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AuthResponse {
-    private String message;
+public class RefreshTokenResponse {
     private String token;
     private String refreshToken;
-    private UserResponse user;
 }
