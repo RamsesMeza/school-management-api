@@ -41,6 +41,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<MessageResponse> register(@Valid @RequestBody RegisterRequest request) {
+        authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(MessageResponse.builder()
                         .message("Register success, verify your account ")
@@ -66,7 +67,7 @@ public class AuthController {
 
         authService.resendVerificationEmail(request);
         return ResponseEntity.ok(MessageResponse.builder()
-                .message("Email verification link was send successfully")
+                .message("If the account exists, a recovery email has been sent.")
                 .build());
     }
 
@@ -75,7 +76,7 @@ public class AuthController {
 
         authService.recoverPassword(request);
         return ResponseEntity.ok(MessageResponse.builder()
-                .message("Recover password link was send successfully")
+                .message("If the account exists, a recovery email has been sent.")
                 .build());
     }
 

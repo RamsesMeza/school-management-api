@@ -108,10 +108,9 @@ public class AuthService {
     @Transactional
     public void recoverPassword(UserRecoverPasswordRequest request) {
         String email = request.getEmail().trim().toLowerCase();
-        // TODO: Esto permite ver cuentas
-        // Mejor respuesta generica If the account exists, a recovery email has been
-        // sent.
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new RecoverPasswordException("If the account exists, a recovery email has been sent."));
 
         recoverPasswordTokenService.revokePevTokens(user);
         String token = recoverPasswordTokenService.create(user);
